@@ -1,5 +1,6 @@
 node_modules
 .idea
+.gitmessage.txt
 
 #Hardhat files
 cache
