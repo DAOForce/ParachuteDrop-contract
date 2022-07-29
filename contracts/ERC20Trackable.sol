@@ -2,13 +2,10 @@ pragma solidity ^0.8.0;
 
 import "./cores/ERC20.sol";
 import "./cores/draft-ERC20Permit.sol";
-import "./ERC20Votes.sol";
+import "./ERC20VotesComp.sol";
 
 
-abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
-    // constructor() ERC20("JWDToken", "JWD") ERC20Permit("JWDToken") {}
-
-    // The functions below are overrides required by Solidity.
+abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
 
     function _afterTokenTransfer(address from, address to, uint256 amount)
         internal
