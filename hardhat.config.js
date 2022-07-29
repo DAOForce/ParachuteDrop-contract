@@ -9,8 +9,9 @@ require("./tasks/faucet");
 module.exports = {
   solidity: "0.8.9",
   networks: {
-    hardhat: {
-      chainId: 1337 // We set 1337 to make interacting with MetaMask simpler
+    evmos: {
+      url: "https://eth.bd.evmos.dev:8545",
+      accounts: [process.env.PRIVATE_KEY]
     }
   }
 };
