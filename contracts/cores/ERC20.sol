@@ -35,9 +35,9 @@ import "./utils/Context.sol";
 contract ERC20 is Context, IERC20, IERC20Metadata {
     mapping(address => uint256) internal _balances;
 
-    mapping(address => mapping(address => uint256)) private _allowances;
+    mapping(address => mapping(address => uint256)) public _allowances;
 
-    uint256 private _totalSupply;
+    uint256 public _totalSupply;
 
     string private _name;
     string private _symbol;
@@ -46,6 +46,8 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     string private _intro; // 소개글
     string private _image; // 프로필 이미지
     string private _link; // 링크
+
+    address private _owner; // 컨트랙트 소유자
 
     /**
      * @dev Sets the values for {name} and {symbol}.
@@ -59,14 +61,17 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     constructor(
         string memory name_, string memory symbol_,
         string memory _DAOName, string memory _intro,
-        string memory _image, string memory _link
+        string memory _image, string memory _link,
+        address _owner
     ) {
         _name = name_;
         _symbol = symbol_;
+
         _DAOName = _DAOName;
         _intro = _intro;
         _image = _image;
         _link = _link;
+        _owner = _owner;
     }
 
     /**
@@ -82,6 +87,26 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      */
     function symbol() public view virtual override returns (string memory) {
         return _symbol;
+    }
+
+    function getDAOName() public view returns (string memory) {
+        return _DAOName;
+    }
+
+    function getIntro() public view returns (string memory) {
+        return _intro;
+    }
+
+    function getImage() public view returns (string memory) {
+        return _image;
+    }
+
+    function getLink() public view returns (string memory) {
+        return _link;
+    }
+
+    function getOwner() public view returns (address) {
+        return _owner;
     }
 
     /**
