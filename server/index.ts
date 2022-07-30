@@ -26,7 +26,10 @@ app.post('/mint', async (req: Request, res: Response, next: NextFunction) => {
         const airdrop_target_addresses: string[] = req.body['airdrop_target_addresses'];
         const airdrop_round_airdrop_amounts: number = req.body['airdrop_round_airdrop_amounts'];
 
+        console.log("HELLLO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ")
+
         const hardhatToken = await Token.deploy(name, ticker, DAOName, intro, image, link, initial_supply, owner);
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         const receipt = await hardhatToken.deployed();
 
         console.log("airdrop_timestamps", airdrop_timestamps)
@@ -48,7 +51,7 @@ app.post('/mint', async (req: Request, res: Response, next: NextFunction) => {
                 hash: receipt.deployTransaction.hash,
                 contractAddress: receipt.deployTransaction.creates,
             },
-            "airdropToken": {
+            "airdropContract": {
                 hash: receiptAirdrop.deployTransaction.hash,
                 contractAddress: receiptAirdrop.deployTransaction.creates,
             }
