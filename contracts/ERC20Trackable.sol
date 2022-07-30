@@ -9,7 +9,11 @@ import {CommonStructs} from "./CommonStructs.sol";
 
 abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
 
-    // uint16 public roundNumber = 0;  // 최초 에어드랍 진행 시 roundNumber = 1
+    uint16 public roundNumber = 0;  // 최초 에어드랍 진행 시 roundNumber = 1
+
+    function getRoundNumber() public view returns(uint16) {
+        return roundNumber;
+    }
 
     constructor(string memory name) ERC20Permit(name) {}
 

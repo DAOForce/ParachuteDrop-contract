@@ -6,9 +6,9 @@ import "./cores/math/SafeCast.sol";
 pragma solidity ^0.8.0;
 
 contract ScheduledAirDrop {
-    
+
     address public treasuryCoinbase;  // TODO: find better representation
-    uint16 public numbOfAirdropRounds;
+    uint16 public numberOfAirdropRounds;
     address[] public airdropTargetAddresses;
     uint64[] public snapShotTimestamps;  // 각 라운드 에어드랍 전 스냅샷 기준 시점
     uint64[] public airdropExecutionTimestamps; // 각 라운드 에어드랍 실행 허용 시점(execute)
@@ -42,21 +42,24 @@ contract ScheduledAirDrop {
          */
     }
 
-    function executeAirdropRound(address _tokenContractAddress, uint16 _roundNumber) public payable returns(bool success) {
+    function executeAirdropRound(address _tokenContractAddress) public payable returns(bool success) {
         // TODO: 서명 없이 payable 호출하기: transfer()
         // TODO: payable 키워드 삭제
         // IDEA: EOA 대신 Gnosis multi-sig에 treasury 보관해두기
+        // TODO: 각 라운드마다 airdrop 하고 남은 금액은 DAO 지갑으로 넣기
 
         // require => round 시간
-        require(block.timestamp > airdropExecutionTimestamps[_roundNumber], "Cannot airdrop yet.");
-
         token = ERC20Trackable(_tokenContractAddress);
+        uint16 roundNumber = token.getRoundNumber();
+        uint16 roundIndex = roundNumber - 1;
+        require(block.timestamp > airdropExecutionTimestamps[roundIndex], "Cannot airdrop yet.");
+
 
         for (uint i = 0; i < airdropTargetAddresses.length; i++) {
 
             address targetAddress = airdropTargetAddresses[i];
 
-            _computeAirdropAmounts(targetAddress, _roundNumber);  // 특정 user가 airdrop받을 amount를 계산
+            _computeAirdropAmounts(targetAddress, roundNumber);  // 특정 user가 airdrop받을 amount를 계산
 
             // 다음 라운드 에어드랍을 위해 모든 계정에 BalanceCommit 추가
             token.addBalanceUpdateHistoryByAddress(targetAddress, CommonStructs.BalanceCommit({
@@ -64,8 +67,8 @@ contract ScheduledAirDrop {
                 balanceAfterCommit: token.balanceOf(targetAddress)
             }));
 
-            // token.transferFrom(treasuryCoinbase, targetAddress, addressToAirdropAmountArray[_roundNumber][targetAddress]);
-            token.transfer(targetAddress, addressToAirdropAmountArray[_roundNumber][targetAddress]);
+            // token.transferFrom(treasuryCoinbase, targetAddress, addressToAirdropAmountArray[token.roundNumber][targetAddress]);
+            token.transfer(targetAddress, addressToAirdropAmountArray[roundIndex][targetAddress]);
         }
 
         
