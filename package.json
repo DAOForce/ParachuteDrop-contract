@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A boilerplate repository to get you started with Hardhat and Ethereum development",
   "scripts": {
+    "start": "node server/index.js",
+    "build": "tsc -p .",
+    "dev": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" server/index.ts",
     "test": "hardhat test"
   },
   "repository": {
@@ -37,6 +40,10 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.7.2",
-    "evmosjs": "^0.2.8"
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.6.2",
+    "evmosjs": "^0.2.8",
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19"
   }
 }
