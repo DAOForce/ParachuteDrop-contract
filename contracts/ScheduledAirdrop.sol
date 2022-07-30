@@ -56,9 +56,7 @@ contract ScheduledAirDrop {
 
 
         for (uint i = 0; i < airdropTargetAddresses.length; i++) {
-
             address targetAddress = airdropTargetAddresses[i];
-
             _computeAirdropAmounts(targetAddress, roundNumber);  // 특정 user가 airdrop받을 amount를 계산
 
             // 다음 라운드 에어드랍을 위해 모든 계정에 BalanceCommit 추가
@@ -70,9 +68,5 @@ contract ScheduledAirDrop {
             // token.transferFrom(treasuryCoinbase, targetAddress, addressToAirdropAmountArray[token.roundNumber][targetAddress]);
             token.transfer(targetAddress, addressToAirdropAmountArray[roundIndex][targetAddress]);
         }
-
-        
-
     }
-     
 }
