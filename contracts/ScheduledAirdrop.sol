@@ -97,7 +97,6 @@ contract ScheduledAirDrop {
 
         // 에어드랍 대상자 주소 목록을 순회하면서 에어드랍 실행
         for (uint i = 0; i < airdropTargetAddresses.length; i++) {
-
             address targetAddress = airdropTargetAddresses[i];
             uint256 airdropAmountOfUser = _computeAirdropAmounts(targetAddress, roundNumber, roundIndex, airdropUnitVolume);  // 특정 user가 airdrop받을 amount를 계산
 
