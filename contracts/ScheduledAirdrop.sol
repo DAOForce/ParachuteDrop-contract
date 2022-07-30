@@ -1,6 +1,8 @@
 import "./ERC20Trackable.sol";
 import "./CommonStructs.sol";
 import "./cores/math/SafeCast.sol";
+import "hardhat/console.sol";
+
 pragma solidity ^0.8.0;
 
 
@@ -17,12 +19,15 @@ contract ScheduledAirDrop {
     ERC20Trackable token;
 
     constructor(address _tokenAddress, uint64[] memory _airdropSnapshotTimestamps,
-        uint32 _numOfTotalRounds, address[] memory _airdropTargetAddresses) public {
+        uint32 _numOfTotalRounds, address[] memory _airdropTargetAddresses,
+        uint256 _totalAirdropVolumePerRound
+    ) public {
 
         token = ERC20Trackable(_tokenAddress);
         airdropSnapshotTimestamps = _airdropSnapshotTimestamps;
         numOfTotalRounds = _numOfTotalRounds;
         airdropTargetAddresses = _airdropTargetAddresses;
+        totalAirdropVolumePerRound = _totalAirdropVolumePerRound;
     } // TODO: UI에서 입력받은 상태변수 값 초기화 코드 작성
 
     // 홀딩 스코어 = 해당 기간동안 블록넘버 수 * 각 블록넘버에서 홀드하고 있었던 토큰의 수
@@ -47,7 +52,10 @@ contract ScheduledAirDrop {
         // 분모 계산
         // 직전 라운드 이후, 현재 라운드까지의 블록넘버 수
         uint32 currentRoundInitialBlockNumber = SafeCast.toUint32(block.number);  // 현재 (에어드랍 시점) 블록넘버
+//        uint32 previousRoundInitialBlockNumber = initialBlockNumberByRound[_roundIndex - 1];
+        console.log("||||||||||||||||||||| THE INDEX: ", _roundIndex - 1);
         uint32 previousRoundInitialBlockNumber = initialBlockNumberByRound[_roundIndex - 1];
+
         initialBlockNumberByRound.push(currentRoundInitialBlockNumber);
 
         uint32 numberOfBlocksFromPreviousRoundInterval = currentRoundInitialBlockNumber - previousRoundInitialBlockNumber;  // 직전 라운드의 총 블록 넘버 수 (홀딩 스코어 계산을 위함)
@@ -61,7 +69,7 @@ contract ScheduledAirDrop {
         // 분자 계산
         uint32 _previousCommitBlockNumber = previousRoundInitialBlockNumber;  // 초기화
         uint256 _previousCommitBalance = maxCumulativeAirdropVolume; // 이전라운드가 끝나는 시점의 스냅샷 balance 값으로 초기화  // TODO 수정
-
+//        CommonStructs.BalanceCommit[] memory previousBalanceCommitHistoryOfUser = token.getBalanceCommitHistoryByAddress(_roundNumber-1, _userAddress);
         uint256 totalScoreOfTheRound = 0;  // Holding Score Accumulator for this round.
 
         // uint256 _previousCommitBalance = ?
@@ -91,16 +99,18 @@ contract ScheduledAirDrop {
         return actualAirdropAmount;
     }
 
-    function executeAirdropRound(address _tokenContractAddress) public payable returns(bool success) {
+    function executeAirdropRound(address _tokenContractAddress) public payable {
         // TODO: 서명 없이 payable 호출하기: transfer() / payable 키워드 삭제하기?
         // IDEA: EOA 대신 Gnosis multi-sig에 treasury 보관해두기
         // TODO: 각 라운드마다 airdrop 하고 남은 금액은 DAO 지갑으로 넣기
+
 
         uint256 airdropUnitVolume = totalAirdropVolumePerRound / airdropTargetAddresses.length; // 하나의 user address가 이번 라운드에서 받게 될 토큰의 amount (페널티 적용 전)
 
         token = ERC20Trackable(_tokenContractAddress);
         uint16 roundNumber = token.getRoundNumber();
         uint16 roundIndex = roundNumber - 1;
+        console.log("BLOCK TIME STAMP", block.timestamp);
         require(block.timestamp > airdropSnapshotTimestamps[roundIndex], "Cannot execute this airdrop round yet.");
 
         // 에어드랍 대상자 주소 목록을 순회하면서 에어드랍 실행
@@ -111,7 +121,10 @@ contract ScheduledAirDrop {
             // 토큰 전송
             // token.transferFrom(treasuryCoinbase, targetAddress, addressToAirdropAmountArray[roundIndex][targetAddress]);
             // token.transfer(targetAddress, addressToAirdropAmountArray[roundIndex][targetAddress]);
-            token.transfer(targetAddress, airdropAmountOfUser);
+            console.log("AIRDROP AMOUNT OF USER", airdropAmountOfUser);
+//            token.transfer(targetAddress, airdropAmountOfUser);
+            token.airdropFromContractAccount(targetAddress, airdropAmountOfUser);
+
 
             // 다음 라운드 에어드랍을 위해 모든 계정에 BalanceCommit 추가 (라운드를 넘기면서 일괄 스냅샷 남기기)
             token.addBalanceCommitHistoryByAddress(
