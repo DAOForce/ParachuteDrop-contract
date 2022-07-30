@@ -1,5 +1,6 @@
 import "./ERC20Trackable.sol";
 import "./CommonStructs.sol";
+import "./cores/math/SafeCast.sol";
 
 
 pragma solidity ^0.8.0;
@@ -35,7 +36,7 @@ contract ScheduledAirDrop {
     // for문 안에서 실행됨.
     function _computeAirdropAmounts(address _userAddress, uint16 _roundNumber) public {
         // ERC20Trackable token = ERC20Trackable(_tokenContractAddress);
-        CommonStructs.BalanceUpdateCommit[] memory balanceUpdateHistoryOfUser = token.getBalanceUpdateHistoryByAddress(_userAddress);
+        CommonStructs.BalanceCommit[] memory balanceUpdateHistoryOfUser = token.getBalanceUpdateHistoryByAddress(_userAddress);
         /**
          * 여기 구현해야함.
          */
@@ -47,16 +48,27 @@ contract ScheduledAirDrop {
         // IDEA: EOA 대신 Gnosis multi-sig에 treasury 보관해두기
 
         // require => round 시간
-        require(block.timestamp > airdropExecutionTimestamps[_roundNumber], "nnnn");
+        require(block.timestamp > airdropExecutionTimestamps[_roundNumber], "Cannot airdrop yet.");
 
         token = ERC20Trackable(_tokenContractAddress);
 
         for (uint i = 0; i < airdropTargetAddresses.length; i++) {
-            address airdropTargetAddress = airdropTargetAddresses[i];
-            _computeAirdropAmounts(airdropTargetAddress, _roundNumber);  // user가 airdrop받을 amount를 계산
-            // token.transferFrom(treasuryCoinbase, airdropTargetAddress, addressToAirdropAmountArray[_roundNumber][airdropTargetAddress]);
-            token.transfer(airdropTargetAddress, addressToAirdropAmountArray[_roundNumber][airdropTargetAddress]);
+
+            address targetAddress = airdropTargetAddresses[i];
+
+            _computeAirdropAmounts(targetAddress, _roundNumber);  // 특정 user가 airdrop받을 amount를 계산
+
+            // 다음 라운드 에어드랍을 위해 모든 계정에 BalanceCommit 추가
+            token.addBalanceUpdateHistoryByAddress(targetAddress, CommonStructs.BalanceCommit({
+                blockNumber: SafeCast.toUint32(block.number),
+                balanceAfterCommit: token.balanceOf(targetAddress)
+            }));
+
+            // token.transferFrom(treasuryCoinbase, targetAddress, addressToAirdropAmountArray[_roundNumber][targetAddress]);
+            token.transfer(targetAddress, addressToAirdropAmountArray[_roundNumber][targetAddress]);
         }
+
+        
 
     }
      
