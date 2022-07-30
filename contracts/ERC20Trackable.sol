@@ -21,30 +21,30 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
 
     constructor(string memory name) ERC20Permit(name) {}
 
-    mapping(address => CommonStructs.BalanceCommit[])[] private _balanceUpdateHistoryArray;
+    // key: roundNumber, value: mapping
+    mapping(uint16=>mapping(address => CommonStructs.BalanceCommit[])) private _balanceUpdateHistoryMapping;
     /**
-    index of the Array: RoundIndex
-    [
-        {
+    {
+        1: {
             'address 1': [Commit 1, Commit 2, Commit 3, ...],
             'address 2': [Commit 1, Commit 2, Commit 3, ...],
             ...
-        },
-        {
+            },
+        2: {
             'address 1': [Commit 1, Commit 2, Commit 3, ...],
             'address 2': [Commit 1, Commit 2, Commit 3, ...],
             ...
-        }
-    ]
+            }
+    }
 
      */
 
-    function getBalanceCommitHistoryByAddress(uint16 _roundIndex, address _userAddress) public view returns (CommonStructs.BalanceCommit[] memory) {
-        return _balanceUpdateHistoryArray[_roundIndex][_userAddress];
+    function getBalanceCommitHistoryByAddress(uint16 _roundNumber, address _userAddress) public view returns (CommonStructs.BalanceCommit[] memory) {
+        return _balanceUpdateHistoryMapping[_roundNumber][_userAddress];
     }
 
-    function addBalanceCommitHistoryByAddress(uint16 _roundIndex, address _userAddress, CommonStructs.BalanceCommit memory newCommit) public {
-        _balanceUpdateHistoryArray[_roundIndex][_userAddress].push(newCommit);
+    function addBalanceCommitHistoryByAddress(uint16 _roundNumber, address _userAddress, CommonStructs.BalanceCommit memory newCommit) public {
+        _balanceUpdateHistoryMapping[_roundNumber][_userAddress].push(newCommit);
     }
     
     // function getBalanceCommit(address _userAddress, uint _index) public view returns(uint32, uint256) {
@@ -67,10 +67,10 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
         uint256 senderBalance = _balances[_from];  // 업데이트 이후 balance
         uint256 recipientBalance = _balances[_to]; // 업데이트 이후 balance
 
-        uint16 roundIndex = roundNumber - 1;
+//        uint16 roundIndex = roundNumber - 1;
 
-        _balanceUpdateHistoryArray[roundIndex][_from].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: senderBalance}));  // TODO check) afterTransfer 시점에 balance는 업데이트되어있는 상태?
-        _balanceUpdateHistoryArray[roundIndex][_to].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: recipientBalance}));
+        _balanceUpdateHistoryMapping[roundNumber][_from].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: senderBalance}));  // TODO check) afterTransfer 시점에 balance는 업데이트되어있는 상태?
+        _balanceUpdateHistoryMapping[roundNumber][_to].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: recipientBalance}));
         
     }
 
