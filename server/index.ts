@@ -3,8 +3,10 @@ import express, { Request, Response, NextFunction } from 'express';
 const { ethers } = require("hardhat");
 
 const app = express();
+const cors = require('cors')
 // Request body를 parsing 하기 위한 미들웨어 사용
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
