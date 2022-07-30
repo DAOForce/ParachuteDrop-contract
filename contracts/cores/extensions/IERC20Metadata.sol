@@ -25,4 +25,6 @@ interface IERC20Metadata is IERC20 {
      * @dev Returns the decimals places of the token.
      */
     function decimals() external view returns (uint8);
+
+    function getDAOName() external view returns (string memory);
 }
