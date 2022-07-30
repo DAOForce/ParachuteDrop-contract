@@ -6,7 +6,7 @@ import "./ERC20VotesComp.sol";
 
 abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
 
-    constructor(string memory name) ERC20Permit(name, "1") {}
+    constructor(string memory name) ERC20Permit(name) {}
 
     function _afterTokenTransfer(address from, address to, uint256 amount) internal override (ERC20, ERC20Votes) {
         super._afterTokenTransfer(from, to, amount);
