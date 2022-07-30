@@ -2,6 +2,7 @@ pragma solidity ^0.8.0;
 
 import "./ERC20Trackable.sol";
 import "./cores/ERC20.sol";
+import "hardhat/console.sol";
 
 // minting 예제
 contract TelescopeToken is ERC20Trackable {
