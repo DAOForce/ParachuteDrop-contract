@@ -11,7 +11,7 @@ import "hardhat/console.sol";
 
 abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
 
-    uint16 private roundNumber = 1;  // 최초 에어드랍 진행 시 roundNumber = 1
+    uint16 private roundNumber = 0;  // 최초 에어드랍 진행 시 roundNumber = 1
 
     function getRoundNumber() public view returns(uint16) {
         return roundNumber;
@@ -71,7 +71,6 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
         uint256 recipientBalance = _balances[_to]; // 업데이트 이후 balance
 
 //        uint16 roundIndex = roundNumber - 1;
-
         _balanceUpdateHistoryMapping[roundNumber][_from].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: senderBalance}));  // TODO check) afterTransfer 시점에 balance는 업데이트되어있는 상태?
         _balanceUpdateHistoryMapping[roundNumber][_to].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: recipientBalance}));
         
