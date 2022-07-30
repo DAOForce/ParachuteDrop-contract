@@ -5,6 +5,8 @@ import "./cores/draft-ERC20Permit.sol";
 import "./ERC20VotesComp.sol";
 import "./cores/math/SafeCast.sol";
 import {CommonStructs} from "./CommonStructs.sol";
+import "hardhat/console.sol";
+
 
 
 abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
@@ -19,7 +21,8 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
         roundNumber += 1;
     }
 
-    constructor(string memory name) ERC20Permit(name) {}
+    constructor(string memory name) ERC20Permit(name) {
+    }
 
     // key: roundNumber, value: mapping
     mapping(uint16=>mapping(address => CommonStructs.BalanceCommit[])) private _balanceUpdateHistoryMapping;

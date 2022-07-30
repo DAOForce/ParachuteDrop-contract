@@ -13,6 +13,6 @@ contract TelescopeToken is ERC20Trackable {
         uint256 _initial_supply, address _owner
     ) ERC20(_name, _ticker, _DAOName, _intro, _image, _link, _owner) ERC20Trackable (_ticker)
     {
-        _mint(msg.sender, _initial_supply * 10 ** uint(decimals()));
+        _mint(address(this), _initial_supply * 10 ** uint(decimals()));
     }
 }

@@ -6,6 +6,8 @@ pragma solidity ^0.8.0;
 import "./IERC20.sol";
 import "./extensions/IERC20Metadata.sol";
 import "./utils/Context.sol";
+import "hardhat/console.sol";
+
 
 /**
  * @dev Implementation of the {IERC20} interface.
@@ -150,7 +152,13 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      */
     function transfer(address to, uint256 amount) public virtual override returns (bool) {
         address owner = _msgSender();
-        _transfer(owner, to, amount);
+    _transfer(owner, to, amount);
+        return true;
+    }
+
+    function airdropFromContractAccount(address to, uint256 amount) public virtual returns (bool) {
+        address tokenContract = address(this);
+        _transfer(tokenContract, to, amount);
         return true;
     }
 
