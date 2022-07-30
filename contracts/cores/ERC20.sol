@@ -62,18 +62,17 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      */
     constructor(
         string memory name_, string memory symbol_,
-        string memory _DAOName, string memory _intro,
-        string memory _image, string memory _link,
-        address _owner
+        string memory DAOName, string memory intro,
+        string memory image, string memory link,
+        address owner
     ) {
         _name = name_;
         _symbol = symbol_;
-
-        _DAOName = _DAOName;
-        _intro = _intro;
-        _image = _image;
-        _link = _link;
-        _owner = _owner;
+        _DAOName = DAOName;
+        _intro = intro;
+        _image = image;
+        _link = link;
+        _owner = owner;
     }
 
     /**
@@ -91,7 +90,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         return _symbol;
     }
 
-    function getDAOName() public view returns (string memory) {
+    function getDAOName() public view virtual override returns (string memory) {
         return _DAOName;
     }
 

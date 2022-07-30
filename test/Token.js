@@ -58,6 +58,8 @@ describe("Token contract", function () {
     it("Should transfer tokens between accounts", async function () {
       const {hardhatToken, owner, addr1, addr2, airdropToken} = await loadFixture(deployTokenFixture);
 
+      console.log(">>>>>>>>>>>>>>>>>>>>>", await hardhatToken.getDAOName(), await hardhatToken.getIntro())
+
       // Transfer 50 tokens from owner to addr1
       // console.log("<<<<<<<<<<<<<<<<<<", await hardhatToken.balanceOf(owner.address));
       console.log("<<<<<<<<<<<<<<<<<<", await hardhatToken.balanceOf(hardhatToken.address));
