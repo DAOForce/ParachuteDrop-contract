@@ -1,3 +1,4 @@
+// @ts-ignore
 import express, { Request, Response, NextFunction } from 'express';
 const { ethers } = require("hardhat");
 
@@ -24,6 +25,8 @@ app.post('/mint', async (req: Request, res: Response, next: NextFunction) => {
 
         const hardhatToken = await Token.deploy(name, ticker, DAOName, intro, image, link, initial_supply, owner);
         const receipt = await hardhatToken.deployed();
+
+        // Airdrop 물리는 로직 추가 필요
 
         return res.status(200).send({
             hash: receipt.deployTransaction.hash,

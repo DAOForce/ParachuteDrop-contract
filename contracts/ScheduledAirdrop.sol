@@ -13,9 +13,17 @@ contract ScheduledAirDrop {
     address[] public airdropTargetAddresses;  // TODO 라운드별로 가변적인 경우
     uint32[] public initialBlockNumberByRound;  // 각 라운드의 시작 시점 블록 넘버
     uint64[] public airdropSnapshotTimestamps; // 각 라운드 에어드랍 실행 허용 시점(execute)이자 스냅샷 기준시점 (in UNIX timestamp)
+    uint32 public numOfTotalRounds;
     ERC20Trackable token;
 
-    constructor(){}  // TODO: UI에서 입력받은 상태변수 값 초기화 코드 작성
+    constructor(address _tokenAddress, uint64[] memory _airdropSnapshotTimestamps,
+        uint32 _numOfTotalRounds, address[] memory _airdropTargetAddresses) public {
+
+        token = ERC20Trackable(_tokenAddress);
+        airdropSnapshotTimestamps = _airdropSnapshotTimestamps;
+        numOfTotalRounds = _numOfTotalRounds;
+        airdropTargetAddresses = _airdropTargetAddresses;
+    } // TODO: UI에서 입력받은 상태변수 값 초기화 코드 작성
 
     // 홀딩 스코어 = 해당 기간동안 블록넘버 수 * 각 블록넘버에서 홀드하고 있었던 토큰의 수
     // uint256[] public cumulativeTotalHoldingScore;  // 에어드랍받은 토큰을 한 번도 안 팔고 전부 계속 가지고 있었을 경우의 스코어 누적 값
@@ -34,7 +42,7 @@ contract ScheduledAirDrop {
         }
 
         // 커밋 구조체 히스토리(배열)
-        CommonStructs.BalanceCommit[] memory balanceCommitHistoryOfUser = token.getBalanceCommitHistoryByAddress(_roundIndex, _userAddress);
+        CommonStructs.BalanceCommit[] memory balanceCommitHistoryOfUser = token.getBalanceCommitHistoryByAddress(_roundNumber, _userAddress);
         
         // 분모 계산
         // 직전 라운드 이후, 현재 라운드까지의 블록넘버 수
@@ -107,7 +115,7 @@ contract ScheduledAirDrop {
 
             // 다음 라운드 에어드랍을 위해 모든 계정에 BalanceCommit 추가 (라운드를 넘기면서 일괄 스냅샷 남기기)
             token.addBalanceCommitHistoryByAddress(
-                roundIndex,
+                roundNumber,
                 targetAddress,
                 CommonStructs.BalanceCommit({
                     blockNumber: SafeCast.toUint32(block.number),

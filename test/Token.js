@@ -19,6 +19,24 @@ describe("Token contract", function () {
 
     await hardhatToken.deployed();
 
+    const Airdrop = await ethers.getContractFactory("ScheduledAirDrop");
+
+    // date
+    const AIRDROP_SNAPSHOT_TIMESTAMPS = [
+      new Date().setMonth(new Date().getMonth() + 1),
+      new Date().setMonth(new Date().getMonth() + 2),
+      new Date().setMonth(new Date().getMonth() + 3),
+    ]
+
+    const AIRDROP_TARGET_ADDRESSES = ["0x49388dCC82D36B6338871C00F26bF49fF9369A1D"];
+
+    const airdropToken = await Airdrop.deploy(
+        hardhatToken.address,
+        AIRDROP_SNAPSHOT_TIMESTAMPS,
+        AIRDROP_SNAPSHOT_TIMESTAMPS.length,
+        AIRDROP_TARGET_ADDRESSES
+    )
+
     return {Token, hardhatToken, owner, addr1, addr2};
   }
 
@@ -85,29 +103,26 @@ describe("Token contract", function () {
       expect(await hardhatToken.transfer(addr1.address, ethers.utils.parseUnits('50', 18)));
 
       // then
-      const historiesOfOwnerFirstCase = await hardhatToken.getBalanceUpdateHistoryByAddress(owner.address);
+      const historiesOfOwnerFirstCase = await hardhatToken.getBalanceCommitHistoryByAddress(1, owner.address);
+      console.log(">>>>>>>>>>>>>>>>", historiesOfOwnerFirstCase)
 
       expect(historiesOfOwnerFirstCase.length).to.equal(1);
-      expect(historiesOfOwnerFirstCase[0].blockNumber).to.equal(2);
       expect(historiesOfOwnerFirstCase[0].balanceAfterCommit).to.equal(ethers.utils.parseUnits('999950', 18));
 
-      const historiesOfAddr1FirstCase = await hardhatToken.getBalanceUpdateHistoryByAddress(addr1.address);
+      const historiesOfAddr1FirstCase = await hardhatToken.getBalanceCommitHistoryByAddress(1, addr1.address);
       expect(historiesOfAddr1FirstCase.length).to.equal(1);
-      expect(historiesOfAddr1FirstCase[0].blockNumber).to.equal(2);
       expect(historiesOfAddr1FirstCase[0].balanceAfterCommit).to.equal(ethers.utils.parseUnits('50', 18));
 
       // when: Transfer 50 tokens from addr1 to addr2 to use connect(signer) to send a transaction from another account
       expect(await hardhatToken.connect(addr1).transfer(addr2.address, ethers.utils.parseUnits('30', 18)));
 
       // then
-      const historiesOfAddr1SecondCase = await hardhatToken.getBalanceUpdateHistoryByAddress(addr1.address);
+      const historiesOfAddr1SecondCase = await hardhatToken.getBalanceCommitHistoryByAddress(1, addr1.address);
       expect(historiesOfAddr1SecondCase.length).to.equal(2);
-      expect(historiesOfAddr1SecondCase[1].blockNumber).to.equal(3);
       expect(historiesOfAddr1SecondCase[1].balanceAfterCommit).to.equal(ethers.utils.parseUnits('20', 18));
 
-      const historiesOfAddr2SecondCase = await hardhatToken.getBalanceUpdateHistoryByAddress(addr2.address);
+      const historiesOfAddr2SecondCase = await hardhatToken.getBalanceCommitHistoryByAddress(1, addr2.address);
       expect(historiesOfAddr2SecondCase.length).to.equal(1);
-      expect(historiesOfAddr2SecondCase[0].blockNumber).to.equal(3);
       expect(historiesOfAddr2SecondCase[0].balanceAfterCommit).to.equal(ethers.utils.parseUnits('30', 18));
     })
   });
