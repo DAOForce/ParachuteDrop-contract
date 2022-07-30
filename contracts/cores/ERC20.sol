@@ -33,7 +33,7 @@ import "./utils/Context.sol";
  * allowances. See {IERC20-approve}.
  */
 contract ERC20 is Context, IERC20, IERC20Metadata {
-    mapping(address => uint256) private _balances;
+    mapping(address => uint256) internal _balances;
 
     mapping(address => mapping(address => uint256)) private _allowances;
 
@@ -41,6 +41,11 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
     string private _name;
     string private _symbol;
+
+    string private _DAOName; // 다오 이름
+    string private _intro; // 소개글
+    string private _image; // 프로필 이미지
+    string private _link; // 링크
 
     /**
      * @dev Sets the values for {name} and {symbol}.
@@ -51,9 +56,17 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * All two of these values are immutable: they can only be set once during
      * construction.
      */
-    constructor(string memory name_, string memory symbol_) {
+    constructor(
+        string memory name_, string memory symbol_,
+        string memory _DAOName, string memory _intro,
+        string memory _image, string memory _link
+    ) {
         _name = name_;
         _symbol = symbol_;
+        _DAOName = _DAOName;
+        _intro = _intro;
+        _image = _image;
+        _link = _link;
     }
 
     /**
@@ -263,7 +276,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         _balances[account] += amount;
         emit Transfer(address(0), account, amount);
 
-        _afterTokenTransfer(address(0), account, amount);
+//        _afterTokenTransfer(address(0), account, amount);
     }
 
     /**
