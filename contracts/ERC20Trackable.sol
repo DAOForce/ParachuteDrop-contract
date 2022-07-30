@@ -9,7 +9,7 @@ import {CommonStructs} from "./CommonStructs.sol";
 
 abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
 
-    uint16 public roundNumber = 0;  // 최초 에어드랍 진행 시 roundNumber = 1
+    uint16 public roundNumber = 1;  // 최초 에어드랍 진행 시 roundNumber = 1
 
     function getRoundNumber() public view returns(uint16) {
         return roundNumber;
@@ -17,21 +17,37 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
 
     constructor(string memory name) ERC20Permit(name) {}
 
-    mapping(address => CommonStructs.BalanceCommit[]) private _balanceUpdateHistory;
+    mapping(address => CommonStructs.BalanceCommit[])[] private _balanceUpdateHistoryArray;
+    /**
+    index of the Array: RoundIndex
+    [
+        {
+            'address 1': [Commit 1, Commit 2, Commit 3, ...],
+            'address 2': [Commit 1, Commit 2, Commit 3, ...],
+            ...
+        },
+        {
+            'address 1': [Commit 1, Commit 2, Commit 3, ...],
+            'address 2': [Commit 1, Commit 2, Commit 3, ...],
+            ...
+        }
+    ]
 
-    function getBalanceUpdateHistoryByAddress(address _userAddress) public view returns (CommonStructs.BalanceCommit[] memory) {
-        return _balanceUpdateHistory[_userAddress];
+     */
+
+    function getBalanceCommitHistoryByAddress(uint16 _roundIndex, address _userAddress) public view returns (CommonStructs.BalanceCommit[] memory) {
+        return _balanceUpdateHistoryArray[_roundIndex][_userAddress];
     }
 
-    function addBalanceUpdateHistoryByAddress(address _userAddress, CommonStructs.BalanceCommit memory newCommit) public {
-        _balanceUpdateHistory[_userAddress].push(newCommit);
+    function addBalanceCommitHistoryByAddress(uint16 _roundIndex, address _userAddress, CommonStructs.BalanceCommit memory newCommit) public {
+        _balanceUpdateHistoryArray[_roundIndex][_userAddress].push(newCommit);
     }
     
-    function getBalanceCommit(address _userAddress, uint _index) public view returns(uint32, uint256) {
-        uint32 _blockNumber = _balanceUpdateHistory[_userAddress][_index].blockNumber;
-        uint256 _balanceAfterCommit = _balanceUpdateHistory[_userAddress][_index].balanceAfterCommit;
-        return (_blockNumber, _balanceAfterCommit);  // Rename to 'Commit'
-    }
+    // function getBalanceCommit(address _userAddress, uint _index) public view returns(uint32, uint256) {
+    //     uint32 _blockNumber = _balanceUpdateHistory[_userAddress][_index].blockNumber;
+    //     uint256 _balanceAfterCommit = _balanceUpdateHistory[_userAddress][_index].balanceAfterCommit;
+    //     return (_blockNumber, _balanceAfterCommit);  // Rename to 'Commit'
+    // }
 
     // transfer 이후  trigger하는 hook
     function _afterTokenTransfer(address _from, address _to, uint256 _amount)  
@@ -47,8 +63,10 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
         uint256 senderBalance = _balances[_from];  // 업데이트 이후 balance
         uint256 recipientBalance = _balances[_to]; // 업데이트 이후 balance
 
-        _balanceUpdateHistory[_from].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: senderBalance}));  // TODO check) afterTransfer 시점에 balance는 업데이트되어있는 상태?
-        _balanceUpdateHistory[_to].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: recipientBalance}));
+        uint16 roundIndex = roundNumber - 1;
+
+        _balanceUpdateHistoryArray[roundIndex][_from].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: senderBalance}));  // TODO check) afterTransfer 시점에 balance는 업데이트되어있는 상태?
+        _balanceUpdateHistoryArray[roundIndex][_to].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: recipientBalance}));
         
     }
 
