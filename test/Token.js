@@ -14,7 +14,7 @@ describe("Token contract", function () {
     const hardhatToken = await Token.deploy("TelescopeToken", "TELE",
         "Telescope DAO", "This DAO is for Telescope",
         "https://www.istockphoto.com/photos/astronomy-telescope-no-people-white-background-isolated-on-white",
-        "https://telescope.io", 1000000
+        "https://telescope.io", 1000000, await owner.getAddress()
     );
 
     await hardhatToken.deployed();
