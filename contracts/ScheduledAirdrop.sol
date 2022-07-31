@@ -8,16 +8,23 @@ pragma solidity ^0.8.0;
 
 contract ScheduledAirDrop {
 
+
     uint32 public numOfTotalRounds;
     uint256 public totalAirdropVolumePerRound;
+
     address[] public airdropTargetAddresses;
     uint64[] public airdropSnapshotTimestamps; // Snapshot & Airdrop execution activation timestamp of each round (in UNIX seconds timestamp)
+    
     mapping(uint16=>uint32) public initialBlockNumberByRound;
 
     ERC20Trackable token;
 
-    constructor(address _tokenAddress, uint64[] memory _airdropSnapshotTimestamps,
-        uint32 _numOfTotalRounds, address[] memory _airdropTargetAddresses,
+
+    constructor(
+        address _tokenAddress,
+        uint64[] memory _airdropSnapshotTimestamps,
+        uint32 _numOfTotalRounds,
+        address[] memory _airdropTargetAddresses,
         uint256 _totalAirdropVolumePerRound
     ) public {
         token = ERC20Trackable(_tokenAddress);
@@ -27,25 +34,31 @@ contract ScheduledAirDrop {
         totalAirdropVolumePerRound = _totalAirdropVolumePerRound;
     }
 
+
     function getNumOfTotalRounds() public view virtual returns (uint32) {
         return numOfTotalRounds;
     }
+
 
     function getTotalAirdropVolumePerRound() public view virtual returns (uint256) {
         return totalAirdropVolumePerRound;
     }
 
+
     function getAirdropTargetAddresses() public view virtual returns (address[] memory) {
         return airdropTargetAddresses;
     }
+
 
     function getAirdropSnapshotTimestamps() public view virtual returns (uint64[] memory) {
         return airdropSnapshotTimestamps;
     }
 
+
     function getInitialBlockNumberByRound(uint16 _round) public view virtual returns (uint32) {
         return initialBlockNumberByRound[_round];
     }
+
 
     /** for each round interval,
      * [ Holding Score ] = [ Number of blocks in certain interval ] * [ Number of token holded at each blocknumber ]
@@ -64,9 +77,6 @@ contract ScheduledAirDrop {
          * 
          * The amount of the token a user can recieve in Airdrop round #(_roundNumber)
          * is determined by the `Holding Score` the user have achieve from the previous Airdrop round interval.
-         *
-         * 
-        
          */
 
         // Initialization for the Round 1 Airdrop
