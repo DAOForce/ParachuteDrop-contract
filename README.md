@@ -1,6 +1,6 @@
 # Parachute Drop Contract for HackAtom Seoul 2022
 ## Purpose
-* It’s an airdrop platform purposed to enhance economic sustainability for DAOs and projects.
+* It’s an airdrop platform **running on Evmos** purposed to enhance economic sustainability for DAOs and projects.
 * Make people delegate their voting power to various members. (in case of governance token)
 
 ## Problem
@@ -11,7 +11,9 @@
 
 ## Solution
 * We suggest 4 main features to solve the problems:
-* Divide airdrop into 10 ~ 15 rounds with intervals for 3 or 6 months b/w each rounds. (1 week for each round)
-* You must delegate your token before receiving airdrops. (in case of governance token)
-* DAO/projects would check whether airdrop receivers have sold their tokens or not when the next round has begun. 
-* Receivers would get token proportionate to amounts of tokens they have been holding during the interval, and delegate its token to another one. (in case of governance token)
+1. Divide airdrop into 10 ~ 15 rounds with intervals for 3 or 6 months b/w each rounds. (1 week for each round)
+2. You must delegate your token before receiving airdrops. (in case of governance token)
+3. DAO/projects would check whether airdrop receivers have sold their tokens or not when the next round has begun. 
+4. Receivers would get token proportionate to amounts of tokens they have been holding during the interval, and delegate its token to another one. (in case of governance token)
+
+## How to keep track of users' balance of token 
