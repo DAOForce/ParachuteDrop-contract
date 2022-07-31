@@ -1,6 +1,6 @@
 # Parachute Drop Contract for HackAtom Seoul 2022
 ## Purpose
-* **`Parachute Drop`** is an *airdrop in platform **`running on Evmos`** purposed to enhance economic sustainability for DAOs and projects.
+* **`Parachute Drop`** is an *airdrop platform* running on **`Evmos`** purposed to enhance economic sustainability for DAOs.
 * Launch your own DAO and airdrop tokens in serveral pre-scheduled batch rounds run dividedly / fully on-chain, only with some initial settings.
 
 ## Problem
@@ -11,10 +11,10 @@
 * Also, many DAOs and projects make token receivers delegate their voting powers during the airdrop process. But receivers won’t change their delegation and neglect it.
 
 ## Solution
-* We suggest 4 main features to solve the problems:
-1. Divide airdrop into 10 ~ 15 rounds with intervals for 3 or 6 months b/w each rounds. (1 week for each round)
+* We suggest 4 main features to solve mentioned problems:
+1. Divide airdrop into 10 ~ 15 rounds with intervals of 3 ~ 6 months b/w each round
   1.1. Divided airdrops are executed as scheduled at the initial contract deployment, without additional off-chain operations.
-2. You must delegate your token before receiving airdrops. (in case of governance token)
+2. Our `ERC20Trackable` token system, which is extension of `ERC20`
 3. DAO/projects would check whether airdrop receivers have sold their tokens or not when the next round has begun. 
 4. Receivers would get token proportionate to amounts of tokens they have been holding during the interval, and delegate its token to another one. (in case of governance token)
 
