@@ -1,10 +1,11 @@
 # Parachute Drop Contract for HackAtom Seoul 2022
 ## Purpose
-* It’s an airdrop platform **running on Evmos** purposed to enhance economic sustainability for DAOs and projects.
-* Make people delegate their voting power to various members. (in case of governance token)
+* **`Parachute Drop`** is an *airdrop in platform **`running on Evmos`** purposed to enhance economic sustainability for DAOs and projects.
+* Launch your own DAO and airdrop tokens in serveral pre-scheduled batch rounds run dividedly / fully on-chain, only with some initial settings.
 
 ## Problem
-* More and more projects are using an airdrop to distribute their tokens and start their token economy. 
+* More and more projects are using airdrop to distribute their tokens and initiate their token economy.
+* However, airdrops are not working very ideally on many projects as people tend to sell airdropped tokens right after they got them, without contributing or participating on the DAO governance.
 * However, you cannot perfectly identify and exclude people from airdrop who are willing to sell their tokens. 
 * Selling airdropped tokens in a short term could damage the sustainability of projects and distort the token economy. 
 * Also, many DAOs and projects make token receivers delegate their voting powers during the airdrop process. But receivers won’t change their delegation and neglect it.
