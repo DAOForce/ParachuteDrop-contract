@@ -173,16 +173,16 @@ describe("Token contract", function () {
       expect(await hardhatToken.balanceOf(addr3.address)).to.equal(1000);
       
       // // when
-      await hardhatToken.connect(addr1).transfer(addr3.address, 500);
+      await hardhatToken.connect(addr1).transfer(addr3.address, 800);
 
       // hardhatToken.transferFrom(addr1, addr3, 500);
       await airdropToken.executeAirdropRound(hardhatToken.address);
 
       // // then
 
-      expect(await hardhatToken.balanceOf(addr1.address)).to.equal(1000);
+      expect(await hardhatToken.balanceOf(addr1.address)).to.equal(800);
       expect(await hardhatToken.balanceOf(addr2.address)).to.equal(2000);
-      expect(await hardhatToken.balanceOf(addr3.address)).to.equal(2500);
+      expect(await hardhatToken.balanceOf(addr3.address)).to.equal(2800);
 
 
     });
