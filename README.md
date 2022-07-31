@@ -1,4 +1,6 @@
 # Parachute Drop Contract for HackAtom Seoul 2022
+![Parachute Drop](https://user-images.githubusercontent.com/91793849/182012123-2707c9c3-6a82-42bc-b71f-abb5eba51ac7.jpeg)
+
 ## Parachute Drop
 * **`Parachute Drop`** is an *airdrop platform* running on **`Evmos`** purposed to enhance economic sustainability for DAOs.
 * Launch your own DAO and airdrop tokens in serveral pre-scheduled batch rounds run dividedly / fully on-chain, only with a few initial settings.
