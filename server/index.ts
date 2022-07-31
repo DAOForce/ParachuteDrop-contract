@@ -9,8 +9,20 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
+const totalMintedContract: {
+    id: number; governanceToken: { hash: any; contractAddress: any; };
+    airdropContract: { hash: any; contractAddress: any; };
+}[] = [];
+
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
+    // 서버가 minting한 주소 전체를 가지고 있도록 한다
     res.send('Crypto is eating the world!');
+});
+
+app.get('/mint/getAll', (req: Request, res: Response, next: NextFunction) => {
+    return res.status(200).send({
+       data: totalMintedContract
+   })
 });
 
 app.post('/mint', async (req: Request, res: Response, next: NextFunction) => {
@@ -45,6 +57,20 @@ app.post('/mint', async (req: Request, res: Response, next: NextFunction) => {
         )
 
         const receiptAirdrop = await airdropToken.deployed();
+
+        totalMintedContract.push(
+            {
+                "id": totalMintedContract.length + 1,
+                "governanceToken": {
+                    hash: receipt.deployTransaction.hash,
+                    contractAddress: receipt.deployTransaction.creates,
+                },
+                "airdropContract": {
+                    hash: receiptAirdrop.deployTransaction.hash,
+                    contractAddress: receiptAirdrop.deployTransaction.creates,
+                }
+            }
+        )
 
         return res.status(200).send({
             "governanceToken": {
