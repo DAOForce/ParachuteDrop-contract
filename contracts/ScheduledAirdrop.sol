@@ -27,6 +27,26 @@ contract ScheduledAirDrop {
         totalAirdropVolumePerRound = _totalAirdropVolumePerRound;
     }
 
+    function getNumOfTotalRounds() public view virtual returns (uint32) {
+        return numOfTotalRounds;
+    }
+
+    function getTotalAirdropVolumePerRound() public view virtual returns (uint256) {
+        return totalAirdropVolumePerRound;
+    }
+
+    function getAirdropTargetAddresses() public view virtual returns (address[] memory) {
+        return airdropTargetAddresses;
+    }
+
+    function getAirdropSnapshotTimestamps() public view virtual returns (uint64[] memory) {
+        return airdropSnapshotTimestamps;
+    }
+
+    function getInitialBlockNumberByRound(uint16 _round) public view virtual returns (uint32) {
+        return initialBlockNumberByRound[_round];
+    }
+
     /** for each round interval,
      * [ Holding Score ] = [ Number of blocks in certain interval ] * [ Number of token holded at each blocknumber ]
      */
