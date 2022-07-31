@@ -13,11 +13,11 @@
 ## Solution
 * We suggest 4 main features to solve mentioned problems:
 1. Divide airdrop into 10 ~ 15 rounds with intervals of 3 ~ 6 months b/w each round
-  1.1. Divided airdrops are executed as scheduled at the initial contract deployment, without additional off-chain operations.
-2. Our `ERC20Trackable` token system, which is extension of `ERC20` tracks every single token transfer by users, recording snapshots of balance for each token holders
-3. At each round of the airdrop, our `ScheduledAirdrop` contract calculates the `Holding Score` based on the amount and holding period during the previous airdrop rounds intervals.
-4. As a new airdrop round launches, `Holding Scores` are calculated on-chain, distributing different amount of tokens to token holders.
-5. No off-chain data input is required after the initial deployment of the contracts.
+2. Divided airdrops are executed as scheduled at the initial contract deployment, without additional off-chain operations.
+3. Our `ERC20Trackable` token system, which is extension of `ERC20` tracks every single token transfer by users, recording snapshots of balance for each token holders
+4. At each round of the airdrop, our `ScheduledAirdrop` contract calculates the `Holding Score` based on the amount and holding period during the previous airdrop rounds intervals.
+5. As a new airdrop round launches, `Holding Scores` are calculated on-chain, distributing different amount of tokens to token holders.
+6. No off-chain data input is required after the initial deployment of the contracts.
 
 ## How to keep track of users' balance of token 
 Please follow this link
