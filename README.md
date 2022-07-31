@@ -1,22 +1,23 @@
 # Parachute Drop Contract for HackAtom Seoul 2022
-## Purpose
+## Parachute Drop
 * **`Parachute Drop`** is an *airdrop platform* running on **`Evmos`** purposed to enhance economic sustainability for DAOs.
-* Launch your own DAO and airdrop tokens in serveral pre-scheduled batch rounds run dividedly / fully on-chain, only with some initial settings.
+* Launch your own DAO and airdrop tokens in serveral pre-scheduled batch rounds run dividedly / fully on-chain, only with a few initial settings.
 
 ## Problem
-* More and more projects are using airdrop to distribute their tokens and initiate their token economy.
-* However, airdrops are not working very ideally on many projects as people tend to sell airdropped tokens right after they got them, without contributing or participating on the DAO governance.
-* However, you cannot perfectly identify and exclude people from airdrop who are willing to sell their tokens. 
-* Selling airdropped tokens in a short term could damage the sustainability of projects and distort the token economy. 
-* Also, many DAOs and projects make token receivers delegate their voting powers during the airdrop process. But receivers won’t change their delegation and neglect it.
+* Many crypto projects including awesome DAOs airdrops their governance token to initiate and activate their own token economy.
+* However, airdrops are not working very ideally as people tend to sell the tokens right after they got them, without contributing or participating on the DAO governance.
+* Dumping airdropped tokens in a short term could damage the sustainability of the projects and distort the token economy. 
+* We suggest a novel solution to efficiently incentivize active supporters & token holders of the DAO in a long term of time, instead of in a single batch airdrop event.
+
 
 ## Solution
 * We suggest 4 main features to solve mentioned problems:
 1. Divide airdrop into 10 ~ 15 rounds with intervals of 3 ~ 6 months b/w each round
   1.1. Divided airdrops are executed as scheduled at the initial contract deployment, without additional off-chain operations.
-2. Our `ERC20Trackable` token system, which is extension of `ERC20`
-3. DAO/projects would check whether airdrop receivers have sold their tokens or not when the next round has begun. 
-4. Receivers would get token proportionate to amounts of tokens they have been holding during the interval, and delegate its token to another one. (in case of governance token)
+2. Our `ERC20Trackable` token system, which is extension of `ERC20` tracks every single token transfer by users, recording snapshots of balance for each token holders
+3. At each round of the airdrop, our `ScheduledAirdrop` contract calculates the `Holding Score` based on the amount and holding period during the previous airdrop rounds intervals.
+4. As a new airdrop round launches, `Holding Scores` are calculated on-chain, distributing different amount of tokens to token holders.
+5. No off-chain data input is required after the initial deployment of the contracts.
 
 ## How to keep track of users' balance of token 
 Please follow this link
