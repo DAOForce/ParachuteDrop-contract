@@ -7,7 +7,7 @@ require("./tasks/faucet");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  defaultNetwork: "evmos",
+  // defaultNetwork: "evmos",
   solidity: "0.8.9",
   networks: {
     evmos: {

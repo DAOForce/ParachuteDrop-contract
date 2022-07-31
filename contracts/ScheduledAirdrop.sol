@@ -31,6 +31,26 @@ contract ScheduledAirDrop {
         totalAirdropVolumePerRound = _totalAirdropVolumePerRound;
     } // TODO: UI에서 입력받은 상태변수 값 초기화 코드 작성
 
+    function getNumOfTotalRounds() public view virtual returns (uint32) {
+        return numOfTotalRounds;
+    }
+
+    function getTotalAirdropVolumePerRound() public view virtual returns (uint256) {
+        return totalAirdropVolumePerRound;
+    }
+
+    function getAirdropTargetAddresses() public view virtual returns (address[] memory) {
+        return airdropTargetAddresses;
+    }
+
+    function getAirdropSnapshotTimestamps() public view virtual returns (uint64[] memory) {
+        return airdropSnapshotTimestamps;
+    }
+
+    function getInitialBlockNumberByRound(uint16 _round) public view virtual returns (uint32) {
+        return initialBlockNumberByRound[_round];
+    }
+
     // 홀딩 스코어 = 해당 기간동안 블록넘버 수 * 각 블록넘버에서 홀드하고 있었던 토큰의 수
     // uint256[] public cumulativeTotalHoldingScore;  // 에어드랍받은 토큰을 한 번도 안 팔고 전부 계속 가지고 있었을 경우의 스코어 누적 값
     // mapping(address=>uint256)[] public cumulativeHoldingScoreByAddress;  // 각 라운드까지 토큰을 홀딩하고 있던 스코어의 누적 값 => 0으로 초기화해야함.
