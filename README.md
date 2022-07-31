@@ -12,6 +12,7 @@
 ## Solution
 * We suggest 4 main features to solve the problems:
 1. Divide airdrop into 10 ~ 15 rounds with intervals for 3 or 6 months b/w each rounds. (1 week for each round)
+  1.1. Divided airdrops are executed as scheduled at the initial contract deployment, without additional off-chain operations.
 2. You must delegate your token before receiving airdrops. (in case of governance token)
 3. DAO/projects would check whether airdrop receivers have sold their tokens or not when the next round has begun. 
 4. Receivers would get token proportionate to amounts of tokens they have been holding during the interval, and delegate its token to another one. (in case of governance token)
@@ -19,3 +20,7 @@
 ## How to keep track of users' balance of token 
 Please follow this link
 https://docs.google.com/document/d/11R5V5q38uc41Iu0GLragcQbfb6uuSFj7wGrOTU9E6ZM/edit?usp=sharing
+
+## Dependencies
+* @openzeppeline/contracts library
+* Our ERC20 Token Contract `ERC20Trackable.sol`, specialized for DAO's airdrop division platform operation, inherits and overrides some key methods from `ERC20VotesComp.sol` Contract of @openzeppelin/contracts library.
