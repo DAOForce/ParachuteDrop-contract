@@ -3,8 +3,10 @@ import express, { Request, Response, NextFunction } from 'express';
 const { ethers } = require("hardhat");
 
 const app = express();
+const cors = require('cors')
 // Request body를 parsing 하기 위한 미들웨어 사용
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
@@ -22,15 +24,37 @@ app.post('/mint', async (req: Request, res: Response, next: NextFunction) => {
         const link: string = req.body['link'];
         const initial_supply: string = req.body['initial_supply'];
         const owner: string = req.body['owner'];
+        const airdrop_timestamps: number[] = req.body['airdrop_timestamps'];
+        const airdrop_target_addresses: string[] = req.body['airdrop_target_addresses'];
+        const airdrop_round_airdrop_amounts: number = req.body['airdrop_round_airdrop_amounts'];
 
         const hardhatToken = await Token.deploy(name, ticker, DAOName, intro, image, link, initial_supply, owner);
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         const receipt = await hardhatToken.deployed();
 
-        // Airdrop 물리는 로직 추가 필요
+        console.log("airdrop_timestamps", airdrop_timestamps)
+        console.log("airdrop_target_addresses", airdrop_target_addresses)
+
+        const Airdrop = await ethers.getContractFactory("ScheduledAirDrop");
+        const airdropToken = await Airdrop.deploy(
+            hardhatToken.address,
+            airdrop_timestamps,
+            airdrop_timestamps.length,
+            airdrop_target_addresses,
+            airdrop_round_airdrop_amounts
+        )
+
+        const receiptAirdrop = await airdropToken.deployed();
 
         return res.status(200).send({
-            hash: receipt.deployTransaction.hash,
-            contractAddress: receipt.deployTransaction.creates,
+            "governanceToken": {
+                hash: receipt.deployTransaction.hash,
+                contractAddress: receipt.deployTransaction.creates,
+            },
+            "airdropContract": {
+                hash: receiptAirdrop.deployTransaction.hash,
+                contractAddress: receiptAirdrop.deployTransaction.creates,
+            }
         })
 
     } catch (err) {

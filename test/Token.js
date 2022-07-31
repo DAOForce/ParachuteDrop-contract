@@ -6,6 +6,10 @@ const { expect } = require("chai");
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const {BigNumber} = require("ethers");
 
+let AIRDROP_SNAPSHOT_TIMESTAMPS;
+let AIRDROP_TARGET_ADDRESSES;
+let TOTAL_AIRDROP_VOLUME_PER_ROUND = 3000;
+
 describe("Token contract", function () {
   async function deployTokenFixture() {
     const Token = await ethers.getContractFactory("TelescopeToken");
@@ -22,7 +26,7 @@ describe("Token contract", function () {
     const Airdrop = await ethers.getContractFactory("ScheduledAirDrop");
 
     // date
-    const AIRDROP_SNAPSHOT_TIMESTAMPS = [
+    AIRDROP_SNAPSHOT_TIMESTAMPS = [
       Math.round(new Date().setMonth(new Date().getMonth() - 3) / 1000),
       Math.round(new Date().setMonth(new Date().getMonth() - 2) / 1000),
       Math.round(new Date().setMonth(new Date().getMonth() - 1) / 1000),
@@ -30,9 +34,9 @@ describe("Token contract", function () {
 
     console.log(">>>>>>>>>>>>>>>>>>>>", AIRDROP_SNAPSHOT_TIMESTAMPS)
 
-    const AIRDROP_TARGET_ADDRESSES = [addr1.address, addr2.address, addr3.address];
+    AIRDROP_TARGET_ADDRESSES = [addr1.address, addr2.address, addr3.address];
 
-    const TOTAL_AIRDROP_VOLUME_PER_ROUND = 3000;
+    TOTAL_AIRDROP_VOLUME_PER_ROUND = 3000;
 
     const airdropToken = await Airdrop.deploy(
         hardhatToken.address,
@@ -57,6 +61,8 @@ describe("Token contract", function () {
   describe("Transactions", function () {
     it("Should transfer tokens between accounts", async function () {
       const {hardhatToken, owner, addr1, addr2, airdropToken} = await loadFixture(deployTokenFixture);
+
+      console.log(">>>>>>>>>>>>>>>>>>>>>", await hardhatToken.getDAOName(), await hardhatToken.getIntro())
 
       // Transfer 50 tokens from owner to addr1
       // console.log("<<<<<<<<<<<<<<<<<<", await hardhatToken.balanceOf(owner.address));
@@ -101,6 +107,14 @@ describe("Token contract", function () {
           initialOwnerBalance
       );
     });
+
+    it("should query airdrop state when requested", async () => {
+      const {hardhatToken, owner, addr1, addr2, airdropToken} = await loadFixture(deployTokenFixture);
+      expect(await airdropToken.getNumOfTotalRounds()).to.equal(AIRDROP_SNAPSHOT_TIMESTAMPS.length);
+      expect(await airdropToken.getTotalAirdropVolumePerRound()).deep.equal(TOTAL_AIRDROP_VOLUME_PER_ROUND);
+      expect(await airdropToken.getAirdropTargetAddresses()).deep.equal(AIRDROP_TARGET_ADDRESSES);
+      expect(await airdropToken.getAirdropSnapshotTimestamps()).deep.equal(AIRDROP_SNAPSHOT_TIMESTAMPS);
+    })
   });
 
   // describe("Transfer Tokens", async function () {

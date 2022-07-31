@@ -162,7 +162,8 @@ contract ScheduledAirDrop {
                     balanceAfterCommit: token.balanceOf(targetAddress)
             }));
 
-            uint256 airdropAmountOfUser = _computeAirdropAmounts(targetAddress, roundNumber, roundIndex, airdropUnitVolume);  // 특정 user가 airdrop받을 amount를 계산
+            // compute the amount of Airdrop for this round / for certain user
+            uint256 airdropAmountOfUser = _computeAirdropAmounts(targetAddress, roundNumber, roundIndex, airdropUnitVolume);
 
             // transfer the token
             token.airdropFromContractAccount(targetAddress, airdropAmountOfUser);
