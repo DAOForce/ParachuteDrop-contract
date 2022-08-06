@@ -19,7 +19,6 @@ contract ScheduledAirDrop {
 
     ERC20Trackable token;
 
-
     constructor(
         address _tokenAddress,
         uint64[] memory _airdropSnapshotTimestamps,

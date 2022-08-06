@@ -12,7 +12,7 @@ module.exports = {
   networks: {
     evmos: {
       url: "https://eth.bd.evmos.dev:8545",
-      accounts: [process.env.PRIVATE_KEY]
+      accounts: [process.env.PRIVATE_KEY_EVMOS]
     }
   }
 };
