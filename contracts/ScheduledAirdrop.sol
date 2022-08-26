@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: CC0-1.0
+
 import "./ERC20Trackable.sol";
 import "./CommonStructs.sol";
 import "./cores/math/SafeCast.sol";
@@ -16,6 +18,7 @@ contract ScheduledAirDrop {
     uint64[] public airdropSnapshotTimestamps; // Snapshot & Airdrop execution activation timestamp of each round (in UNIX seconds timestamp)
     
     mapping(uint16=>uint32) public initialBlockNumberByRound;
+    mapping(address=>uint256) public addressToAirdropVolumePerRound;
 
     ERC20Trackable token;
 
@@ -24,16 +27,26 @@ contract ScheduledAirDrop {
         uint64[] memory _airdropSnapshotTimestamps,
         uint32 _numOfTotalRounds,
         address[] memory _airdropTargetAddresses,
+        uint256[] memory _airdropAmountsPerRoundByAddress,
         uint256 _totalAirdropVolumePerRound
-    ) public {
-        token = ERC20Trackable(_tokenAddress);
+    ){
+        token = ERC20Trackable(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
+
         airdropSnapshotTimestamps = _airdropSnapshotTimestamps;
         numOfTotalRounds = _numOfTotalRounds;
         airdropTargetAddresses = _airdropTargetAddresses;
         totalAirdropVolumePerRound = _totalAirdropVolumePerRound;
+        
+        require(_airdropTargetAddresses.length == _airdropAmountsPerRoundByAddress.length);
+        uint256 sumOfTotalAirdropAmountPerRound;  // double-chceck input array
+        for (uint256 i = 0; i < _airdropTargetAddresses.length; i++) {
+            addressToAirdropVolumePerRound[_airdropTargetAddresses[i]] = _airdropAmountsPerRoundByAddress[i];  // fill in `addressToAirdropVolumePerRound` mapping
+            sumOfTotalAirdropAmountPerRound += _airdropAmountsPerRoundByAddress[i];
+        }
+        require(sumOfTotalAirdropAmountPerRound == _totalAirdropVolumePerRound);
     }
 
-
+    // TODO Check: virtual?
     function getNumOfTotalRounds() public view virtual returns (uint32) {
         return numOfTotalRounds;
     }
@@ -48,6 +61,9 @@ contract ScheduledAirDrop {
         return airdropTargetAddresses;
     }
 
+    function getAirdropAmountPerRoundByAddress(address _address) public view returns (uint256) {
+        return addressToAirdropVolumePerRound[_address];
+    }
 
     function getAirdropSnapshotTimestamps() public view virtual returns (uint64[] memory) {
         return airdropSnapshotTimestamps;
@@ -69,32 +85,28 @@ contract ScheduledAirDrop {
     }
 
 
-    function _computeAirdropAmounts(address _userAddress, uint16 _roundNumber, uint16 _roundIndex, uint256 _airdropUnitVolume) public returns (uint256) {
+    function _computeAirdropAmounts(address _userAddress, uint256 _airdropUnitVolume, uint16 _roundNumber, uint16 _roundIndex) public returns (uint256) {
 
-        /** Calculation of the amount of the token that the `_userAddress` can receive
-         * in Airdrop round #(_roundNumber).
-         * 
-         * The amount of the token a user can recieve in Airdrop round #(_roundNumber)
-         * is determined by the `Holding Score` the user have achieve from the previous Airdrop round interval.
+        /** Calculation of airdrop amount for each token holder.
+         *  The amount of the token `_userAddress` can recieve in airdrop round #(_roundNumber)
+         *  is determined by the `Holding Score` the user have achieve from the previous airdrop round interval.
          */
 
-        // Initialization for the Round 1 Airdrop
+        // Initialization for the Round 1 Airdrop (no calculation of the `holding score`.)
         if (_roundNumber == 1) {
-            uint32 round1InitialBlockNumber = SafeCast.toUint32(block.number);
-            initialBlockNumberByRound[1] = round1InitialBlockNumber;
+            uint32 firstRoundInitialBlockNumber = SafeCast.toUint32(block.number);
+            initialBlockNumberByRound[1] = firstRoundInitialBlockNumber;
             return _airdropUnitVolume;
-
         }
 
         // BalanceCommit History from the previous round (in BalanceCommit object array)
         CommonStructs.BalanceCommit[] memory balanceCommitHistoryOfUser = token.getBalanceCommitHistoryByAddress(_roundNumber - 1, _userAddress);
 
-
         // Denominator
 
-        // Calculation of denominator of the `Holding Score ratio`.
+        // Calculation of denominator of the `Holding Score ratio`
+        // which is the maximum holding volume one could have achieved.
         uint32 currentRoundInitialBlockNumber = SafeCast.toUint32(block.number);
-        
         uint32 previousRoundInitialBlockNumber = initialBlockNumberByRound[_roundNumber - 1];        
 
         initialBlockNumberByRound[_roundNumber] = currentRoundInitialBlockNumber;
@@ -111,20 +123,21 @@ contract ScheduledAirDrop {
 
         // Numerator
 
-        // Calculation of numerator of the `Airdrop Holding Score ratio`.
-        uint32 _previousCommitBlockNumber = previousRoundInitialBlockNumber;  // Iniitialize
+        // Calculation of numerator of the `Airdrop Holding Score ratio`
+        // considering the penalty for token dumping between airdrop rounds.
+        uint32 _previousCommitBlockNumber = previousRoundInitialBlockNumber;  // Initialize
         uint256 _previousCommitBalance = maxCumulativeAirdropVolume; // Initialize
         uint256 totalScoreOfTheRound = 0;  // Holding Score Accumulator for this round.
 
         // Calculate the `Holding Score` from the BalanceCommits of each user.
         for (uint i = 0; i < balanceCommitHistoryOfUser.length; i++) {
-            console.log("/");
-            CommonStructs.BalanceCommit memory _balanceCommit = balanceCommitHistoryOfUser[i];
+            CommonStructs.BalanceCommit memory _balanceCommit = balanceCommitHistoryOfUser[i];  // Balance commit history instance.
             
             uint32 _commitBlockNumber = _balanceCommit.blockNumber;
-            uint32 _blockNumberInterval = _commitBlockNumber - _previousCommitBlockNumber;
+            uint32 _blockNumberInterval = _commitBlockNumber - _previousCommitBlockNumber;  // Number of blocks between balance commits.
 
             // Cannot get additional `Holding Score` for the exceeding amount compared to the total Airdropped volume for the user address.
+            // `Epoch` stands for the period between two balance commits (recored by token transfer)
             uint256 _currentEpochScore = _min(maxCumulativeAirdropVolume, _previousCommitBalance) * _blockNumberInterval;
 
             totalScoreOfTheRound += _currentEpochScore;
@@ -143,14 +156,8 @@ contract ScheduledAirDrop {
         return actualAirdropAmount;
     }
 
-    function executeAirdropRound(address _tokenContractAddress) public payable {
-        
-        token.incrementRoundNumber();  // (token's airdrop roundNumber) += 1
+    function executeAirdropRound() public payable {
 
-        // The maximum amount of Airdrop one could receive from this round (with no penalty)
-        uint256 airdropUnitVolume = totalAirdropVolumePerRound / airdropTargetAddresses.length;
-
-        token = ERC20Trackable(_tokenContractAddress);  // >>>>>>>>>>>>>>>>>>>Check: to delete?
         uint16 roundNumber = token.getRoundNumber();
         uint16 roundIndex = roundNumber - 1;
 
@@ -160,11 +167,12 @@ contract ScheduledAirDrop {
         for (uint i = 0; i < airdropTargetAddresses.length; i++) {
 
             address targetAddress = airdropTargetAddresses[i];
+            uint256 airdropUnitVolume = addressToAirdropVolumePerRound[targetAddress];  // The maximum amount of Airdrop `targetAddress` could receive from this round (with no penalty)
 
-            // Add round-initial snapshot as the last snapshot of the previous round
+            // Add round-openning snapshot as the last snapshot of the previous round
             // as a marker for calculating `Holding Score`.
             token.addBalanceCommitHistoryByAddress(
-                roundNumber - 1,
+                roundNumber - 1,  // TODO Check
                 targetAddress,
                 CommonStructs.BalanceCommit({
                     blockNumber: SafeCast.toUint32(block.number),
@@ -172,11 +180,13 @@ contract ScheduledAirDrop {
             }));
 
             // compute the amount of Airdrop for this round / for certain user
-            uint256 airdropAmountOfUser = _computeAirdropAmounts(targetAddress, roundNumber, roundIndex, airdropUnitVolume);
+            uint256 airdropAmountOfAddress = _computeAirdropAmounts(targetAddress, airdropUnitVolume, roundNumber, roundIndex);
 
             // transfer the token
-            token.airdropFromContractAccount(targetAddress, airdropAmountOfUser);
+            token.airdropFromContractAccount(targetAddress, airdropAmountOfAddress);
         }
+
+        token.incrementRoundNumber();  // increment token's airdrop roundNumber.
 
     }
 }
