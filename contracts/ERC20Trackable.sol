@@ -10,7 +10,7 @@ import {CommonStructs} from "./CommonStructs.sol";
 import "hardhat/console.sol";
 
 
-
+// TODO: inherit ERC20Votes
 abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
 
     // round index marker for the last executed Airdrop batch round.
@@ -46,9 +46,7 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
             ...
         },
         ...
-    }
-
-     */
+    } */
 
 
     function getBalanceCommitHistoryByAddress(uint16 _roundNumber, address _userAddress) public view returns (CommonStructs.BalanceCommit[] memory) {

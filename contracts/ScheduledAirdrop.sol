@@ -14,11 +14,28 @@ contract ScheduledAirDrop {
     uint32 public numOfTotalRounds;
     uint256 public totalAirdropVolumePerRound;
 
-    address[] public airdropTargetAddresses;
+    address[] public airdropTargetAddresses;  // Check: redundant?
     uint64[] public airdropSnapshotTimestamps; // Snapshot & Airdrop execution activation timestamp of each round (in UNIX seconds timestamp)
     
     mapping(uint16=>uint32) public initialBlockNumberByRound;
     mapping(address=>uint256) public addressToAirdropVolumePerRound;
+
+    // key: roundNumber, value: mapping
+    mapping(uint16=>mapping(address=>uint256)) private _calculatedAirdropAmountPerRoundByAddress;
+    /**
+    {
+        [ round #1 ]: {
+            'address 1': `airdropAmount for address 1 at round #1`,
+            'address 2': `airdropAmount for address 2 at round #1`,
+            ...
+        },
+        [ round #2 ]: {
+            'address 1': `airdropAmount for address 1 at round #2`,
+            'address 2': `airdropAmount for address 2 at round #2`,
+            ...
+        },
+        ...
+    } */
 
     ERC20Trackable token;
 
@@ -65,10 +82,15 @@ contract ScheduledAirDrop {
         return addressToAirdropVolumePerRound[_address];
     }
 
+    function getCalculatedAirdropAmountPerRoundByAddress(uint16 _round, address _address) public view returns (uint256) {
+        require(msg.sender == _address);
+        return _calculatedAirdropAmountPerRoundByAddress[_round][_address];
+        // TODO: restrict for round index out of range.
+    }
+
     function getAirdropSnapshotTimestamps() public view virtual returns (uint64[] memory) {
         return airdropSnapshotTimestamps;
     }
-
 
     function getInitialBlockNumberByRound(uint16 _round) public view virtual returns (uint32) {
         return initialBlockNumberByRound[_round];
@@ -84,6 +106,13 @@ contract ScheduledAirDrop {
         return (_a >= _b)?_b:_a;
     }
 
+    function _addressInAllowList(address _address) private view returns (bool) {
+        if (addressToAirdropVolumePerRound[_address] > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     function _computeAirdropAmounts(address _userAddress, uint256 _airdropUnitVolume, uint16 _roundNumber, uint16 _roundIndex) public returns (uint256) {
 
@@ -156,14 +185,16 @@ contract ScheduledAirDrop {
         return actualAirdropAmount;
     }
 
-    function executeAirdropRound() public payable {
+    function initiateAirdropRound() public payable {  // Check: renamed (executeAirdropRound => initiateAirdropRound)
+    // TODO: delete payable modifier
 
         uint16 roundNumber = token.getRoundNumber();
         uint16 roundIndex = roundNumber - 1;
 
+        // TODO: 아래에 복붙, 여기서 삭제 검토
         require(block.timestamp > airdropSnapshotTimestamps[roundIndex], "Cannot execute this airdrop round yet.");
 
-        // Execute the Airdrop for the addresses in Airdrop whitelist.
+        // Execute the Airdrop for the addresses in Airdrop allowlist.
         for (uint i = 0; i < airdropTargetAddresses.length; i++) {
 
             address targetAddress = airdropTargetAddresses[i];
@@ -182,11 +213,30 @@ contract ScheduledAirDrop {
             // compute the amount of Airdrop for this round / for certain user
             uint256 airdropAmountOfAddress = _computeAirdropAmounts(targetAddress, airdropUnitVolume, roundNumber, roundIndex);
 
+            // update `_calculatedAirdropAmountPerRoundByAddress` mapping with calculated airdrop amounts by holder's addresses.
+            _calculatedAirdropAmountPerRoundByAddress[roundNumber][targetAddress] = airdropAmountOfAddress;
+
             // transfer the token
-            token.airdropFromContractAccount(targetAddress, airdropAmountOfAddress);
+            // token.airdropFromContractAccount(targetAddress, airdropAmountOfAddress);
         }
 
         token.incrementRoundNumber();  // increment token's airdrop roundNumber.
+    }
 
+    function claimAirdrop(uint16 _roundNumber) public payable {
+
+        require(_addressInAllowList(msg.sender), "You're not in token airdrop allowlist.");  // Check if the function caller is in airdrop allowlist.
+
+        uint16 _roundIndex = _roundNumber - 1;
+        require(block.timestamp > airdropSnapshotTimestamps[_roundIndex], "Cannot claim for the airdrop yet.");
+        
+        // if문보다 더 괜찮은 구현이 있는가?
+        if (_calculatedAirdropAmountPerRoundByAddress[_roundNumber][msg.sender] == 0) {
+            initiateAirdropRound();
+        }
+
+        uint256 airdropAmount = _calculatedAirdropAmountPerRoundByAddress[_roundNumber][msg.sender];
+        
+        token.airdropFromContractAccount(msg.sender, airdropAmount);
     }
 }
