@@ -86,7 +86,7 @@ contract ScheduledAirDrop {
 
         }
 
-        // BalanceCommit History in array
+        // BalanceCommit History from the previous round (in BalanceCommit object array)
         CommonStructs.BalanceCommit[] memory balanceCommitHistoryOfUser = token.getBalanceCommitHistoryByAddress(_roundNumber - 1, _userAddress);
 
 
@@ -103,8 +103,8 @@ contract ScheduledAirDrop {
         // to calculate `Holding Score`
         uint32 numberOfBlocksFromPreviousRoundInterval = currentRoundInitialBlockNumber - previousRoundInitialBlockNumber;
 
-        // Maximum amount of possible Airdrop volume from the intial to the previous Airdrop round that one could have received
-        // if s/he never sold received token.
+        // Maximum amount of possible Airdrop volume from the initial to the previous Airdrop round that one could have received
+        // if the holder never sold received token.
         uint256 maxCumulativeAirdropVolume = (_roundNumber - 1) * _airdropUnitVolume;
         uint256 maxAchievableHoldingScore = maxCumulativeAirdropVolume * numberOfBlocksFromPreviousRoundInterval;
         
@@ -150,7 +150,7 @@ contract ScheduledAirDrop {
         // The maximum amount of Airdrop one could receive from this round (with no penalty)
         uint256 airdropUnitVolume = totalAirdropVolumePerRound / airdropTargetAddresses.length;
 
-        token = ERC20Trackable(_tokenContractAddress);
+        token = ERC20Trackable(_tokenContractAddress);  // >>>>>>>>>>>>>>>>>>>Check: to delete?
         uint16 roundNumber = token.getRoundNumber();
         uint16 roundIndex = roundNumber - 1;
 

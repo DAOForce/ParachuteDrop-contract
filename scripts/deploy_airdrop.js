@@ -4,7 +4,7 @@ async function main() {
 
   // ethers is available in the global scope
   const [deployer] = await ethers.getSigners();
-  const DECIMAL = 10 ** 18;
+  const DECIMALS = 18;
   console.log(
     "Deploying the contracts with the account:",
     await deployer.getAddress()
@@ -26,7 +26,8 @@ async function main() {
         "0x25BA43364BF720d8dFe3c2680CB4C232a29B093C",  // main
         "0xDe264e2133963c9f40e07f290E1D852f7e4e4c7c"  // extra
     ],
-    300000 * DECIMAL  // 라운드 당 에어드랍 수량
+    // 30000 * 10 ** DECIMALS  // 라운드 당 에어드랍 수량
+    '30000000000000000000000'  // in string (to deal with BN)
   );
 
   await airdrop.deployed();
