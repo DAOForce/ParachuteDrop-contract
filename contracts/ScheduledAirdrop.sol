@@ -7,11 +7,15 @@ import "hardhat/console.sol";
 
 pragma solidity ^0.8.0;
 
-
+// TODO 1: claim할 수 있는 duration 내에만 할 수 있게 하기
+// TODO 2: airdrop 컨트랙트 배포 시점이 Trackable 토큰 배포 시점 이후가 될 수 있다.
+//          그래서 나중에 wallet을 연결한 사람이 airdrop 배포 권한이 있는지 보여줘야됨 (owner인지 여부만 보여주면 됨)
+//          +) getTokenContractOwnerAdderess()
+// TODO 3: 서버 역할을 하는 main contract를 하나 두기 (DAO 관련 정보 등 메타데이터를 저장해둘 공간) - DAOspace.sol 등
 contract ScheduledAirDrop {
 
-
     uint32 public numOfTotalRounds;
+    uint32 public roundDurationInDays;
     uint256 public totalAirdropVolumePerRound;
 
     address[] public airdropTargetAddresses;  // Check: redundant?
@@ -42,6 +46,7 @@ contract ScheduledAirDrop {
     constructor(
         address _tokenAddress,
         uint64[] memory _airdropSnapshotTimestamps,
+        uint32 _roundDurationInDays,
         uint32 _numOfTotalRounds,
         address[] memory _airdropTargetAddresses,
         uint256[] memory _airdropAmountsPerRoundByAddress,
@@ -50,6 +55,7 @@ contract ScheduledAirDrop {
         token = ERC20Trackable(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
 
         airdropSnapshotTimestamps = _airdropSnapshotTimestamps;
+        roundDurationInDays = _roundDurationInDays;
         numOfTotalRounds = _numOfTotalRounds;
         airdropTargetAddresses = _airdropTargetAddresses;
         totalAirdropVolumePerRound = _totalAirdropVolumePerRound;
@@ -180,9 +186,9 @@ contract ScheduledAirDrop {
         uint256 airdropScoreRatio = 100 * totalScoreOfTheRound / maxAchievableHoldingScore;
 
         // calculated (final) Airdrop amount
-        uint256 actualAirdropAmount = _airdropUnitVolume * airdropScoreRatio / 100;
-
-        return actualAirdropAmount;
+        // uint256 actualAirdropAmount = _airdropUnitVolume * airdropScoreRatio / 100;
+        return _airdropUnitVolume * airdropScoreRatio / 100;
+        // return actualAirdropAmount;
     }
 
     function initiateAirdropRound() public payable {  // Check: renamed (executeAirdropRound => initiateAirdropRound)

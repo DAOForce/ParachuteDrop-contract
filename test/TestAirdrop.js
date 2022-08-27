@@ -1,4 +1,5 @@
 const { expect } = require("chai");
+const { ethers } = require("hardhat");
 
 // We use `loadFixture` to share common setups (or fixtures) between tests.
 // Using this simplifies your tests and makes them run faster, by taking
@@ -9,6 +10,17 @@ const {BigNumber} = require("ethers");
 let AIRDROP_SNAPSHOT_TIMESTAMPS;
 let AIRDROP_TARGET_ADDRESSES;
 let TOTAL_AIRDROP_VOLUME_PER_ROUND = 3000;
+
+
+// Contructor of Airdrop Contract
+// constructor(
+//   address _tokenAddress,
+//   uint64[] memory _airdropSnapshotTimestamps,
+//   uint32 _numOfTotalRounds,
+//   address[] memory _airdropTargetAddresses,
+//   uint256[] memory _airdropAmountsPerRoundByAddress,
+//   uint256 _totalAirdropVolumePerRound
+// )
 
 describe("Token contract", function () {
   async function deployTokenFixture() {
