@@ -34,8 +34,9 @@ describe("Token Contract", function() {
         const [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
         // Token Contract
-        const Token = await ethers.getContractFactory("TelescopeToken");
+        const Token = await ethers.getContractFactory("GovernanceToken");
 
+        // Token instance
         const TelescopeToken = await Token.deploy(
             "TelescopeToken",
             "TELE",

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: CC0-1.0
 
-import "./ERC20Trackable.sol";
+import "./GovernanceToken.sol";
 import "./CommonStructs.sol";
 import "./cores/math/SafeCast.sol";
 import "hardhat/console.sol";
@@ -37,7 +37,7 @@ contract ScheduledAirDrop {
         ...
     } */
 
-    ERC20Trackable token;
+    GovernanceToken token;
 
     constructor(
         address _tokenAddress,
@@ -48,9 +48,7 @@ contract ScheduledAirDrop {
         uint256[] memory _airdropAmountsPerRoundByAddress,
         uint256 _totalAirdropVolumePerRound
     ){
-        // TODO check: ERC20Trackable, TelescopeToken 중 어떤 것의 address에 접근해야 하는가?
-        // TODO check: 인터페이스 필요 없음?
-        token = ERC20Trackable(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
+        token = GovernanceToken(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
 
         // Only the owner of the token contract can deploy the airdrop contract
         require(msg.sender == token.getOwner());
