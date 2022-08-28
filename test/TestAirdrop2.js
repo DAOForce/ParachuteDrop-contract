@@ -51,7 +51,7 @@ describe("Token Contract", function() {
         // Airdrop Contract
         const Airdrop = await ethers.getContractFactory("ScheduledAirDrop");
         
-        TOKEN_ADDRESS = TelescopeToken.getAddress();
+        TOKEN_ADDRESS = TelescopeToken.address;
         AIRDROP_SNAPSHOT_TIMESTAMPS = [
             Math.round(new Date().setMonth(new Date().getMonth() - 3) / 1000),
             Math.round(new Date().setMonth(new Date().getMonth() - 2) / 1000),
@@ -63,7 +63,7 @@ describe("Token Contract", function() {
         AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS = [30, 50, 70];  // Check: decimal?
         TOTAL_AIRDROP_VOLUME_PER_ROUND = 30 + 50 + 70;
 
-        console.log(">>>>>>>>> Airdrop timestamps: ", AIRDROP_SNAPSHOT_TIMESTAMPS);
+        console.log("input data >>>> Airdrop timestamps: ", AIRDROP_SNAPSHOT_TIMESTAMPS);
 
         const TelescopeTokenAirdrop = await Airdrop.deploy(
             TOKEN_ADDRESS,
@@ -79,8 +79,12 @@ describe("Token Contract", function() {
     }
 
     describe("Token Deployment", function() {
-        it("Should assign the total supply of tokens to the owner"
+        it("Should assign the total supply of tokens to the contract address", async function() {
+            const {TelescopeToken, owner} = await loadFixture(deployTokenFixture);
+            const contractBalance = await TelescopeToken.balanceOf(TelescopeToken.address);
+            expect(await TelescopeToken.totalSupply()).to.equal(contractBalance);
+            console.log("input data >>>> total token supply: ", await TelescopeToken.totalSupply());
 
-        );
+        });
     })
 })
