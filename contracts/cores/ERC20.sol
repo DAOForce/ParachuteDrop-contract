@@ -61,9 +61,12 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * construction.
      */
     constructor(
-        string memory name_, string memory symbol_,
-        string memory DAOName, string memory intro,
-        string memory image, string memory link,
+        string memory name_,
+        string memory symbol_,
+        string memory DAOName,
+        string memory intro,
+        string memory image,
+        string memory link,
         address owner
     ) {
         _name = name_;

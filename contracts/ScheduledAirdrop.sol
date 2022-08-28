@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: CC0-1.0
 
 import "./GovernanceToken.sol";
+import "./ERC20Trackable.sol";
 import "./CommonStructs.sol";
 import "./cores/math/SafeCast.sol";
 import "hardhat/console.sol";
@@ -9,6 +10,8 @@ pragma solidity ^0.8.0;
 
 
 contract ScheduledAirDrop {
+
+    address public tokenAddress;
 
     uint32 public numOfTotalRounds;
     uint32 public roundDurationInDays;
@@ -38,6 +41,7 @@ contract ScheduledAirDrop {
     } */
 
     GovernanceToken token;
+    // ERC20Trackable token;
 
     constructor(
         address _tokenAddress,
@@ -49,6 +53,8 @@ contract ScheduledAirDrop {
         uint256 _totalAirdropVolumePerRound
     ){
         token = GovernanceToken(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
+        // token = ERC20Trackable(_tokenAddress);
+        tokenAddress = _tokenAddress;
 
         // Only the owner of the token contract can deploy the airdrop contract
         require(msg.sender == token.getOwner());
@@ -60,26 +66,47 @@ contract ScheduledAirDrop {
         totalAirdropVolumePerRound = _totalAirdropVolumePerRound;
         
         require(_airdropTargetAddresses.length == _airdropAmountsPerRoundByAddress.length);
-        uint256 sumOfTotalAirdropAmountPerRound;  // double-chceck input array
+        uint256 sumOfTotalAirdropAmountPerRound;
         for (uint256 i = 0; i < _airdropTargetAddresses.length; i++) {
             addressToAirdropVolumePerRound[_airdropTargetAddresses[i]] = _airdropAmountsPerRoundByAddress[i];  // fill in `addressToAirdropVolumePerRound` mapping
             sumOfTotalAirdropAmountPerRound += _airdropAmountsPerRoundByAddress[i];
         }
-        require(sumOfTotalAirdropAmountPerRound == _totalAirdropVolumePerRound);
+        require(sumOfTotalAirdropAmountPerRound == _totalAirdropVolumePerRound);  // double-chceck input array
     }
 
-    // TODO Check: virtual?
-    function getNumOfTotalRounds() public view virtual returns (uint32) {
+    // Token contract info getter
+    function getTokenInfo() public view returns (CommonStructs.TokenInfo memory) {
+        CommonStructs.TokenInfo memory _tokenInfo;
+        _tokenInfo.totalSupply = token.totalSupply();
+        _tokenInfo.name = token.name();
+        _tokenInfo.symbol = token.symbol();
+        _tokenInfo.DAOName = token.getDAOName();
+        _tokenInfo.intro = token.getIntro();
+        _tokenInfo.image = token.getImage();
+        _tokenInfo.link = token.getLink();
+        _tokenInfo.owner = token.getOwner();
+        _tokenInfo.tokenContractAddress = tokenAddress;
+        return _tokenInfo;
+    }
+
+    // Constructor input params info getters
+    function getTokenAddress() public view returns (address) {
+        return tokenAddress;
+    }
+
+    function getAirdropSnapshotTimestamps() public view returns (uint64[] memory) {
+        return airdropSnapshotTimestamps;
+    }
+
+    function getRoundDurationInDays() public view returns (uint32) {
+        return roundDurationInDays;
+    }
+    
+    function getNumOfTotalRounds() public view returns (uint32) {
         return numOfTotalRounds;
     }
 
-
-    function getTotalAirdropVolumePerRound() public view virtual returns (uint256) {
-        return totalAirdropVolumePerRound;
-    }
-
-
-    function getAirdropTargetAddresses() public view virtual returns (address[] memory) {
+    function getAirdropTargetAddresses() public view returns (address[] memory) {
         return airdropTargetAddresses;
     }
 
@@ -87,17 +114,18 @@ contract ScheduledAirDrop {
         return addressToAirdropVolumePerRound[_address];
     }
 
+    function getTotalAirdropVolumePerRound() public view returns (uint256) {
+        return totalAirdropVolumePerRound;
+    }
+
+    // Airdrop rounds info getters
     function getCalculatedAirdropAmountPerRoundByAddress(uint16 _round, address _address) public view returns (uint256) {
         require(msg.sender == _address);
         return _calculatedAirdropAmountPerRoundByAddress[_round][_address];
         // TODO: restrict for round index out of range.
     }
 
-    function getAirdropSnapshotTimestamps() public view virtual returns (uint64[] memory) {
-        return airdropSnapshotTimestamps;
-    }
-
-    function getInitialBlockNumberByRound(uint16 _round) public view virtual returns (uint32) {
+    function getInitialBlockNumberByRound(uint16 _round) public view returns (uint32) {
         return initialBlockNumberByRound[_round];
     }
 

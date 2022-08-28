@@ -29,7 +29,6 @@ let TOTAL_AIRDROP_VOLUME_PER_ROUND;
 
 describe("Token Contract", function() {
     async function deployTokenFixture() {
-
         // Signers
         const [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
@@ -76,16 +75,62 @@ describe("Token Contract", function() {
             TOTAL_AIRDROP_VOLUME_PER_ROUND
         );
 
-        return { Token, TelescopeToken, Airdrop, TelescopeTokenAirdrop, owner, addr1, addr2, addr3};
+        return { Token, TelescopeToken, Airdrop, TelescopeTokenAirdrop, owner, addr1, addr2, addr3 };
     }
 
-    describe("Token Deployment", function() {
-        it("Should assign the total supply of tokens to the contract address", async function() {
+    describe("Token contract Deployment", function() {
+        it("Should assign the total supply of tokens to the contract address.", async function() {
             const {TelescopeToken, owner} = await loadFixture(deployTokenFixture);
             const contractBalance = await TelescopeToken.balanceOf(TelescopeToken.address);
             expect(await TelescopeToken.totalSupply()).to.equal(contractBalance);
             console.log("input data >>>> total token supply: ", await TelescopeToken.totalSupply());
 
         });
+    });
+
+    describe("Airdrop contract match the token contract", function() {
+        it("Airdrop contract matched to correct token contract.", async function() {
+            const {TelescopeToken, TelescopeTokenAirdrop, owner} = await loadFixture(deployTokenFixture);
+            const DECIMAL = 18;
+
+            const tokenInfo = await TelescopeTokenAirdrop.getTokenInfo();
+            // expect(tokenInfo.totalSupply).to.equal(1500 * 10 ** DECIMAL);  // ERROR: the input value cannot be normalized to a BigInt.
+            expect(tokenInfo.name).to.equal("TelescopeToken");
+            expect(tokenInfo.symbol).to.equal("TELE");
+            expect(tokenInfo.DAOName).to.equal("TelescopeDAO");
+            expect(tokenInfo.intro).to.equal("DAO for interstellar telescope launch");
+            expect(tokenInfo.image).to.equal("some_image_url");
+            expect(tokenInfo.link).to.equal("some_website_link");
+            expect(tokenInfo.owner).to.equal(owner.address);
+            expect(tokenInfo.tokenContractAddress).to.equal(TelescopeToken.address);
+        });
     })
-})
+
+    describe("Airdrop contract deployment", async function() {
+        it("Airdrop contract deployed successfully with correct constuctor params.", async function() {
+            const {Token, TelescopeToken, Airdrop, TelescopeTokenAirdrop, owner, addr1, addr2, addr3} = await loadFixture(deployTokenFixture);
+    
+            const tokenAddress = await TelescopeTokenAirdrop.getTokenAddress();
+            const roundDurationInDays = await TelescopeTokenAirdrop.getRoundDurationInDays();
+            const numOfTotalRounds = await TelescopeTokenAirdrop.getNumOfTotalRounds();
+            const airdropTargetAddresses = await TelescopeTokenAirdrop.getAirdropTargetAddresses();
+            const airdropAmountPerRoundByAddress1 = await TelescopeTokenAirdrop.getAirdropAmountPerRoundByAddress(addr1.address);
+            const airdropAmountPerRoundByAddress2 = await TelescopeTokenAirdrop.getAirdropAmountPerRoundByAddress(addr2.address);
+            const airdropAmountPerRoundByAddress3 = await TelescopeTokenAirdrop.getAirdropAmountPerRoundByAddress(addr3.address);
+            const totalAirdropVolumePerRound = await TelescopeTokenAirdrop.getTotalAirdropVolumePerRound();
+
+            expect(tokenAddress).to.equal(TelescopeToken.address);
+            expect(roundDurationInDays).to.equal(7);
+            expect(numOfTotalRounds).to.equal(5);
+            expect(airdropTargetAddresses[0]).to.equal(addr1.address);
+            expect(airdropTargetAddresses[1]).to.equal(addr2.address);
+            expect(airdropTargetAddresses[2]).to.equal(addr3.address);
+            expect(airdropAmountPerRoundByAddress1).to.equal(30);
+            expect(airdropAmountPerRoundByAddress2).to.equal(50);
+            expect(airdropAmountPerRoundByAddress3).to.equal(70);
+            expect(totalAirdropVolumePerRound).to.equal(30 + 50 + 70);
+        });
+
+
+    });
+});

@@ -7,4 +7,15 @@ library CommonStructs {
         uint32 blockNumber;
         uint256 balanceAfterCommit;
     }
+    struct TokenInfo {
+        uint256 totalSupply;
+        string name;
+        string symbol;
+        string DAOName;
+        string intro;
+        string image;
+        string link;
+        address owner;
+        address tokenContractAddress;
+    }
 }
