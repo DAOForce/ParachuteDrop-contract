@@ -7,11 +7,7 @@ import "hardhat/console.sol";
 
 pragma solidity ^0.8.0;
 
-// TODO 1: claim할 수 있는 duration 내에만 할 수 있게 하기
-// TODO 2: airdrop 컨트랙트 배포 시점이 Trackable 토큰 배포 시점 이후가 될 수 있다.
-//          그래서 나중에 wallet을 연결한 사람이 airdrop 배포 권한이 있는지 보여줘야됨 (owner인지 여부만 보여주면 됨)
-//          +) getTokenContractOwnerAdderess()
-// TODO 3: 서버 역할을 하는 main contract를 하나 두기 (DAO 관련 정보 등 메타데이터를 저장해둘 공간) - DAOspace.sol 등
+
 contract ScheduledAirDrop {
 
     uint32 public numOfTotalRounds;
@@ -52,7 +48,12 @@ contract ScheduledAirDrop {
         uint256[] memory _airdropAmountsPerRoundByAddress,
         uint256 _totalAirdropVolumePerRound
     ){
+        // TODO check: ERC20Trackable, TelescopeToken 중 어떤 것의 address에 접근해야 하는가?
+        // TODO check: 인터페이스 필요 없음?
         token = ERC20Trackable(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
+
+        // Only the owner of the token contract can deploy the airdrop contract
+        require(msg.sender == token.getOwner());
 
         airdropSnapshotTimestamps = _airdropSnapshotTimestamps;
         roundDurationInDays = _roundDurationInDays;
@@ -120,7 +121,7 @@ contract ScheduledAirDrop {
         }
     }
 
-    function _computeAirdropAmounts(address _userAddress, uint256 _airdropUnitVolume, uint16 _roundNumber, uint16 _roundIndex) public returns (uint256) {
+    function _computeAirdropAmounts(address _userAddress, uint256 _airdropUnitVolume, uint16 _roundNumber) public returns (uint256) {
 
         /** Calculation of airdrop amount for each token holder.
          *  The amount of the token `_userAddress` can recieve in airdrop round #(_roundNumber)
@@ -217,7 +218,7 @@ contract ScheduledAirDrop {
             }));
 
             // compute the amount of Airdrop for this round / for certain user
-            uint256 airdropAmountOfAddress = _computeAirdropAmounts(targetAddress, airdropUnitVolume, roundNumber, roundIndex);
+            uint256 airdropAmountOfAddress = _computeAirdropAmounts(targetAddress, airdropUnitVolume, roundNumber);
 
             // update `_calculatedAirdropAmountPerRoundByAddress` mapping with calculated airdrop amounts by holder's addresses.
             _calculatedAirdropAmountPerRoundByAddress[roundNumber][targetAddress] = airdropAmountOfAddress;
@@ -235,6 +236,7 @@ contract ScheduledAirDrop {
 
         uint16 _roundIndex = _roundNumber - 1;
         require(block.timestamp > airdropSnapshotTimestamps[_roundIndex], "Cannot claim for the airdrop yet.");
+        require(block.timestamp <= airdropSnapshotTimestamps[_roundIndex] + roundDurationInDays * 24 * 60 * 60, "Claim period is over for this round");  // TODO: check timestamp calculation
         
         // if문보다 더 괜찮은 구현이 있는가?
         if (_calculatedAirdropAmountPerRoundByAddress[_roundNumber][msg.sender] == 0) {
