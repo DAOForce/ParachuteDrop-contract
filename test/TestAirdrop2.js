@@ -33,10 +33,10 @@ describe("Token Contract", function() {
         const [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
         // Token Contract
-        const Token = await ethers.getContractFactory("GovernanceToken");
+        const TokenContract = await ethers.getContractFactory("GovernanceToken");
 
         // Token instance
-        const TelescopeToken = await Token.deploy(
+        const Token = await TokenContract.deploy(
             "TelescopeToken",
             "TELE",
             "TelescopeDAO",
@@ -46,12 +46,12 @@ describe("Token Contract", function() {
             1500,  // DECIMAL == 18
             owner.getAddress()
         );
-        await TelescopeToken.deployed();
+        await Token.deployed();
 
         // Airdrop Contract
-        const Airdrop = await ethers.getContractFactory("ScheduledAirDrop");
+        const AirdropContract = await ethers.getContractFactory("ScheduledAirDrop");
         
-        TOKEN_ADDRESS = TelescopeToken.address;
+        TOKEN_ADDRESS = Token.address;
         AIRDROP_SNAPSHOT_TIMESTAMPS = [
             Math.round(new Date().setMonth(new Date().getMonth() - 3) / 1000),
             Math.round(new Date().setMonth(new Date().getMonth() - 2) / 1000),
@@ -65,7 +65,7 @@ describe("Token Contract", function() {
 
         console.log("input data >>>> Airdrop timestamps: ", AIRDROP_SNAPSHOT_TIMESTAMPS);
 
-        const TelescopeTokenAirdrop = await Airdrop.deploy(
+        const Airdrop = await AirdropContract.deploy(
             TOKEN_ADDRESS,
             AIRDROP_SNAPSHOT_TIMESTAMPS,
             ROUND_DURATION_IN_DAYS,
@@ -75,25 +75,25 @@ describe("Token Contract", function() {
             TOTAL_AIRDROP_VOLUME_PER_ROUND
         );
 
-        return { Token, TelescopeToken, Airdrop, TelescopeTokenAirdrop, owner, addr1, addr2, addr3 };
+        return { TokenContract, Token, AirdropContract, Airdrop, owner, addr1, addr2, addr3 };
     }
 
     describe("Token contract Deployment", function() {
         it("Should assign the total supply of tokens to the contract address.", async function() {
-            const {TelescopeToken, owner} = await loadFixture(deployTokenFixture);
-            const contractBalance = await TelescopeToken.balanceOf(TelescopeToken.address);
-            expect(await TelescopeToken.totalSupply()).to.equal(contractBalance);
-            console.log("input data >>>> total token supply: ", await TelescopeToken.totalSupply());
+            const {Token, owner} = await loadFixture(deployTokenFixture);
+            const contractBalance = await Token.balanceOf(Token.address);
+            expect(await Token.totalSupply()).to.equal(contractBalance);
+            console.log("input data >>>> total token supply: ", await Token.totalSupply());
 
         });
     });
 
     describe("Airdrop contract match the token contract", function() {
         it("Airdrop contract matched to correct token contract.", async function() {
-            const {TelescopeToken, TelescopeTokenAirdrop, owner} = await loadFixture(deployTokenFixture);
+            const {Token, Airdrop, owner} = await loadFixture(deployTokenFixture);
             const DECIMAL = 18;
 
-            const tokenInfo = await TelescopeTokenAirdrop.getTokenInfo();
+            const tokenInfo = await Airdrop.getTokenInfo();
             // expect(tokenInfo.totalSupply).to.equal(1500 * 10 ** DECIMAL);  // ERROR: the input value cannot be normalized to a BigInt.
             expect(tokenInfo.name).to.equal("TelescopeToken");
             expect(tokenInfo.symbol).to.equal("TELE");
@@ -102,22 +102,22 @@ describe("Token Contract", function() {
             expect(tokenInfo.image).to.equal("some_image_url");
             expect(tokenInfo.link).to.equal("some_website_link");
             expect(tokenInfo.owner).to.equal(owner.address);
-            expect(tokenInfo.tokenContractAddress).to.equal(TelescopeToken.address);
+            expect(tokenInfo.tokenContractAddress).to.equal(Token.address);
         });
     })
 
     describe("Airdrop contract deployment", async function() {
         it("Airdrop contract deployed successfully with correct constuctor params.", async function() {
-            const {Token, TelescopeToken, Airdrop, TelescopeTokenAirdrop, owner, addr1, addr2, addr3} = await loadFixture(deployTokenFixture);
+            const {Token, Airdrop, addr1, addr2, addr3} = await loadFixture(deployTokenFixture);
     
-            const tokenAddress = await TelescopeTokenAirdrop.getTokenAddress();
-            const roundDurationInDays = await TelescopeTokenAirdrop.getRoundDurationInDays();
-            const numOfTotalRounds = await TelescopeTokenAirdrop.getNumOfTotalRounds();
-            const airdropTargetAddresses = await TelescopeTokenAirdrop.getAirdropTargetAddresses();
-            const airdropAmountPerRoundByAddress1 = await TelescopeTokenAirdrop.getAirdropAmountPerRoundByAddress(addr1.address);
-            const airdropAmountPerRoundByAddress2 = await TelescopeTokenAirdrop.getAirdropAmountPerRoundByAddress(addr2.address);
-            const airdropAmountPerRoundByAddress3 = await TelescopeTokenAirdrop.getAirdropAmountPerRoundByAddress(addr3.address);
-            const totalAirdropVolumePerRound = await TelescopeTokenAirdrop.getTotalAirdropVolumePerRound();
+            const tokenAddress = await Airdrop.getTokenAddress();
+            const roundDurationInDays = await Airdrop.getRoundDurationInDays();
+            const numOfTotalRounds = await Airdrop.getNumOfTotalRounds();
+            const airdropTargetAddresses = await Airdrop.getAirdropTargetAddresses();
+            const airdropAmountPerRoundByAddress1 = await Airdrop.getAirdropAmountPerRoundByAddress(addr1.address);
+            const airdropAmountPerRoundByAddress2 = await Airdrop.getAirdropAmountPerRoundByAddress(addr2.address);
+            const airdropAmountPerRoundByAddress3 = await Airdrop.getAirdropAmountPerRoundByAddress(addr3.address);
+            const totalAirdropVolumePerRound = await Airdrop.getTotalAirdropVolumePerRound();
 
             expect(tokenAddress).to.equal(TelescopeToken.address);
             expect(roundDurationInDays).to.equal(7);
@@ -130,7 +130,15 @@ describe("Token Contract", function() {
             expect(airdropAmountPerRoundByAddress3).to.equal(70);
             expect(totalAirdropVolumePerRound).to.equal(30 + 50 + 70);
         });
-
-
     });
+
+    describe("Airdrop execution", async function() {
+        it("", async function() {
+            const {TokenContract, Token, AirdropContract, Airdrop, owner, addr1, addr2, addr3} = await loadFixture(deployTokenFixture);
+            // TODO: test airdrop amount calculation for each airdrop rounds after token transfers
+            // TODO: check block numbers between round intervals
+            // TODO: test airdrop claim function call
+        });
+    });
+
 });

@@ -12,16 +12,6 @@ let AIRDROP_TARGET_ADDRESSES;
 let TOTAL_AIRDROP_VOLUME_PER_ROUND = 3000;
 
 
-// Contructor of Airdrop Contract
-// constructor(
-//   address _tokenAddress,
-//   uint64[] memory _airdropSnapshotTimestamps,
-//   uint32 _numOfTotalRounds,
-//   address[] memory _airdropTargetAddresses,
-//   uint256[] memory _airdropAmountsPerRoundByAddress,
-//   uint256 _totalAirdropVolumePerRound
-// )
-
 describe("Token contract", function () {
   async function deployTokenFixture() {
     const Token = await ethers.getContractFactory("TelescopeToken");
