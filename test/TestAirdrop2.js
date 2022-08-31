@@ -58,11 +58,11 @@ describe("Token & Airdrop contracts test", function() {
             Math.round(new Date().setMonth(new Date().getMonth() - 2) / 1000),
             Math.round(new Date().setMonth(new Date().getMonth() - 1) / 1000),
         ];  // 과거 날짜 데이터
-        ROUND_DURATION_IN_DAYS = 7;
+        ROUND_DURATION_IN_DAYS = 7000; // TODO: 현실적인 기준으로 변경
         NUM_OF_TOTAL_ROUNDS = 5;
         AIRDROP_TARGET_ADDRESSES = [addr1.address, addr2.address, addr3.address];
-        AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS = [30, 50, 70];  // Check: decimal?
-        TOTAL_AIRDROP_VOLUME_PER_ROUND = 30 + 50 + 70;
+        AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS = [utils.parseEther("30"), utils.parseEther("50"), utils.parseEther("70")];
+        TOTAL_AIRDROP_VOLUME_PER_ROUND = utils.parseEther("150");
 
         console.log("input data >>>> Airdrop timestamps: ", AIRDROP_SNAPSHOT_TIMESTAMPS);
 
@@ -76,7 +76,7 @@ describe("Token & Airdrop contracts test", function() {
             TOTAL_AIRDROP_VOLUME_PER_ROUND
         );
 
-        return { TokenContract, Token, AirdropContract, Airdrop, owner, addr1, addr2, addr3 };
+        return { Token, Airdrop, owner, addr1, addr2, addr3 };
     }
 
     describe("Token transfer", async function() {
@@ -167,15 +167,15 @@ describe("Token & Airdrop contracts test", function() {
             const totalAirdropVolumePerRound = await Airdrop.getTotalAirdropVolumePerRound();
 
             expect(tokenAddress).to.equal(Token.address);
-            expect(roundDurationInDays).to.equal(7);
+            expect(roundDurationInDays).to.equal(7000);
             expect(numOfTotalRounds).to.equal(5);
             expect(airdropTargetAddresses[0]).to.equal(addr1.address);
             expect(airdropTargetAddresses[1]).to.equal(addr2.address);
             expect(airdropTargetAddresses[2]).to.equal(addr3.address);
-            expect(airdropAmountPerRoundByAddress1).to.equal(30);
-            expect(airdropAmountPerRoundByAddress2).to.equal(50);
-            expect(airdropAmountPerRoundByAddress3).to.equal(70);
-            expect(totalAirdropVolumePerRound).to.equal(30 + 50 + 70);
+            expect(airdropAmountPerRoundByAddress1).to.equal(utils.parseEther("30"));
+            expect(airdropAmountPerRoundByAddress2).to.equal(utils.parseEther("50"));
+            expect(airdropAmountPerRoundByAddress3).to.equal(utils.parseEther("70"));
+            expect(totalAirdropVolumePerRound).to.equal(utils.parseEther("150"));
         });
         it("Airdrop contract matched to correct token contract.", async function() {
             const {Token, Airdrop, owner} = await loadFixture(deployTokenFixture);
@@ -196,11 +196,45 @@ describe("Token & Airdrop contracts test", function() {
 
     describe("Airdrop execution", async function() {
         it("", async function() {
-            const {TokenContract, Token, AirdropContract, Airdrop, owner, addr1, addr2, addr3} = await loadFixture(deployTokenFixture);
-            // TODO: test airdrop amount calculation for each airdrop rounds after token transfers
-            // TODO: check block numbers between round intervals
-            // TODO: test airdrop claim function call
-            // TODO: should revert if the airdrop claim period is not valid
+            const {Token, Airdrop, owner, addr1, addr2, addr3} = await loadFixture(deployTokenFixture);
+            console.log("\n========================= Airdrop Execution =========================\n");
+
+            // console.log("Token Info: ", await Airdrop.getTokenInfo());
+            const tokenInfo = await Airdrop.getTokenInfo();
+            const tokenSymbol = tokenInfo.symbol;
+            console.log("\nNum of total rounds: ", await Airdrop.getNumOfTotalRounds());
+            console.log("\nRound duration: ", await Airdrop.getRoundDurationInDays(), "days");
+            console.log("\nTotal airdrop volume per round: ", utils.formatEther(await Airdrop.getTotalAirdropVolumePerRound()), tokenSymbol);
+            console.log("\nAirdrop allowlist: ", await Airdrop.getAirdropTargetAddresses());
+            console.log("\nAirdrop Snapshot Timestamps: ", await Airdrop.getAirdropSnapshotTimestamps());
+            
+            // Airdrop.getAirdropAmountPerRoundByAddress()
+            // Airdrop.getTotalAirdropVolumePerRound()
+            // Airdrop.getCalculatedAirdropAmountPerRoundByAddress()
+            // Airdrop.getInitialBlockNumberByRound()
+
+            console.log("================ Token Balances before airdrop round #1 ================");
+            console.log("Contract: ", utils.formatEther(await Token.balanceOf(Token.address)), tokenSymbol);
+            console.log("addr1: ", utils.formatEther(await Token.balanceOf(addr1.address)), tokenSymbol);
+            console.log("addr2: ", utils.formatEther(await Token.balanceOf(addr2.address)), tokenSymbol);
+            console.log("addr3: ", utils.formatEther(await Token.balanceOf(addr3.address)), tokenSymbol);
+            
+            await Airdrop.initiateAirdropRound();
+
+            console.log("Claimmable token amount of addr1 for round 1: ", utils.formatEther(await Airdrop.getCalculatedAirdropAmountPerRoundByAddress(1, addr1.address)), tokenSymbol);
+            console.log("Claimmable token amount of addr2 for round 1: ", utils.formatEther(await Airdrop.getCalculatedAirdropAmountPerRoundByAddress(1, addr2.address)), tokenSymbol);
+            console.log("Claimmable token amount of addr3 for round 1: ", utils.formatEther(await Airdrop.getCalculatedAirdropAmountPerRoundByAddress(1, addr3.address)), tokenSymbol);
+            
+            await Airdrop.connect(addr1).claimAirdrop(1);
+            await Airdrop.connect(addr2).claimAirdrop(1);
+            await Airdrop.connect(addr3).claimAirdrop(1);
+
+            console.log("\n================ Token Balances after airdrop round #1 ================");
+            console.log("Contract: ", utils.formatEther(await Token.balanceOf(Token.address)), tokenSymbol);
+            console.log("addr1: ", utils.formatEther(await Token.balanceOf(addr1.address)), tokenSymbol);
+            console.log("addr2: ", utils.formatEther(await Token.balanceOf(addr2.address)), tokenSymbol);
+            console.log("addr3: ", utils.formatEther(await Token.balanceOf(addr3.address)), tokenSymbol);
+            
         });
     });
 });
