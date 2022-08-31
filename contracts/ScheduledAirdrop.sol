@@ -8,6 +8,8 @@ import "hardhat/console.sol";
 
 pragma solidity ^0.8.0;
 
+// TODO: 모든 라운드 airdrop이 종료되면 Token.round를 0 또는 1로 다시 초기화
+
 
 contract ScheduledAirDrop {
 
@@ -120,7 +122,7 @@ contract ScheduledAirDrop {
 
     // Airdrop rounds info getters
     function getCalculatedAirdropAmountPerRoundByAddress(uint16 _round, address _address) public view returns (uint256) {
-        require(msg.sender == _address);
+        // require(msg.sender == _address);  // You can only view your claimmable airdrop amount
         return _calculatedAirdropAmountPerRoundByAddress[_round][_address];
         // TODO: restrict for round index out of range.
     }
@@ -218,14 +220,13 @@ contract ScheduledAirDrop {
         // return actualAirdropAmount;
     }
 
-    function initiateAirdropRound() public payable {  // Check: renamed (executeAirdropRound => initiateAirdropRound)
-    // TODO: delete payable modifier
+    function initiateAirdropRound() public {  // Check: renamed (executeAirdropRound => initiateAirdropRound)
 
         uint16 roundNumber = token.getRoundNumber();
-        uint16 roundIndex = roundNumber - 1;
+        // uint16 roundIndex = roundNumber - 1;
 
         // TODO: 아래에 복붙, 여기서 삭제 검토
-        require(block.timestamp > airdropSnapshotTimestamps[roundIndex], "Cannot execute this airdrop round yet.");
+        // require(block.timestamp > airdropSnapshotTimestamps[roundIndex], "Cannot execute this airdrop round yet.");
 
         // Execute the Airdrop for the addresses in Airdrop allowlist.
         for (uint i = 0; i < airdropTargetAddresses.length; i++) {

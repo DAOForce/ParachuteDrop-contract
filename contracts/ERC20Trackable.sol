@@ -14,7 +14,7 @@ import "hardhat/console.sol";
 abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
 
     // round index marker for the last executed Airdrop batch round.
-    uint16 private roundNumber = 0;
+    uint16 private roundNumber = 1;  // TOOD: 0으로 초기화?
 
 
     function getRoundNumber() public view returns(uint16) {
