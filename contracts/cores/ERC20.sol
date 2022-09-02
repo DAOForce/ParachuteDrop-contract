@@ -35,7 +35,7 @@ import "hardhat/console.sol";
  * allowances. See {IERC20-approve}.
  */
 contract ERC20 is Context, IERC20, IERC20Metadata {
-    mapping(address => uint256) internal _balances;
+    mapping(address => uint256) private _balances;
 
     mapping(address => mapping(address => uint256)) public _allowances;
 
@@ -155,12 +155,6 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     function transfer(address to, uint256 amount) public virtual override returns (bool) {
         address owner = _msgSender();
         _transfer(owner, to, amount);
-        return true;
-    }
-
-    function airdropFromContractAccount(address to, uint256 amount) public virtual returns (bool) {
-        address tokenContract = address(this);
-        _transfer(tokenContract, to, amount);
         return true;
     }
 

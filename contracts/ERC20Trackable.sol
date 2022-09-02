@@ -91,4 +91,14 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
     {
         super._burn(_account, _amount);
     }
+
+
+    function airdropFromContractAccount(address to, uint256 amount) public returns (bool) {
+        address tokenContract = address(this);
+        _transfer(tokenContract, to, amount);
+        return true;
+    }
 }
+
+
+
