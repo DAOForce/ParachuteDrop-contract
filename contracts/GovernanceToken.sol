@@ -5,9 +5,10 @@ pragma solidity ^0.8.0;
 import "./ERC20Trackable.sol";
 import "hardhat/console.sol";
 
+
 // DAO governance token deployment & mint token to the token contract itself
 contract GovernanceToken is ERC20Trackable {
-
+    
     constructor(
         string memory _name,
         string memory _symbol,

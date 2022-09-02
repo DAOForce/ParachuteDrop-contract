@@ -2,16 +2,18 @@
 
 pragma solidity ^0.8.0;
 
-import "./cores/ERC20.sol";
-import "./ERC20Votes.sol";
-import "./cores/math/SafeCast.sol";
-import {CommonStructs} from "./CommonStructs.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "hardhat/console.sol";
+
+import {CommonStructs} from "./CommonStructs.sol";
 
 
 // TODO: inherit ERC20Votes
 // contract ERC20Trackable is ERC20, ERC20Votes {
-contract ERC20Trackable is ERC20 {
+contract ERC20Trackable is ERC20 { 
 
     // round index marker for the last executed Airdrop batch round.
     uint16 private roundNumber = 1;  // TOOD: 0으로 초기화?
@@ -143,6 +145,3 @@ contract ERC20Trackable is ERC20 {
         return true;
     }
 }
-
-
-

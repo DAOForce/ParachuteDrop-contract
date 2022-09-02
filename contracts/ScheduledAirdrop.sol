@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: CC0-1.0
 
-import "./GovernanceToken.sol";
-import "./ERC20Trackable.sol";
-import "./CommonStructs.sol";
-import "./cores/math/SafeCast.sol";
+import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "hardhat/console.sol";
+
+import "./CommonStructs.sol";
+import "./ERC20Trackable.sol";
+import "./GovernanceToken.sol";
+
 
 pragma solidity ^0.8.0;
 
