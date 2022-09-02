@@ -4,14 +4,14 @@ pragma solidity ^0.8.0;
 
 import "./cores/ERC20.sol";
 import "./cores/draft-ERC20Permit.sol";
-import "./ERC20VotesComp.sol";
+import "./ERC20Votes.sol";
 import "./cores/math/SafeCast.sol";
 import {CommonStructs} from "./CommonStructs.sol";
 import "hardhat/console.sol";
 
 
 // TODO: inherit ERC20Votes
-abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20VotesComp {
+abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
 
     // round index marker for the last executed Airdrop batch round.
     uint16 private roundNumber = 1;  // TOOD: 0으로 초기화?
