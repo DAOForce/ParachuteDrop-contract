@@ -34,7 +34,7 @@ describe("Token & Airdrop contracts test", function() {
         const [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
         // Token Contract
-        const TokenContract = await ethers.getContractFactory("GovernanceToken");
+        const TokenContract = await ethers.getContractFactory("DAOForceToken");
 
         // Token instance
         const Token = await TokenContract.deploy(

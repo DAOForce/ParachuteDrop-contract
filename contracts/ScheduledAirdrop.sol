@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 
 import "./CommonStructs.sol";
 import "./ERC20Trackable.sol";
-import "./GovernanceToken.sol";
+import "./DAOForceToken.sol";
 
 
 pragma solidity ^0.8.0;
@@ -44,8 +44,7 @@ contract ScheduledAirDrop {
         ...
     } */
 
-    GovernanceToken token;
-    // ERC20Trackable token;
+    DAOForceToken token;
 
     constructor(
         address _tokenAddress,
@@ -56,7 +55,7 @@ contract ScheduledAirDrop {
         uint256[] memory _airdropAmountsPerRoundByAddress,
         uint256 _totalAirdropVolumePerRound
     ){
-        token = GovernanceToken(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
+        token = DAOForceToken(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
         // token = ERC20Trackable(_tokenAddress);
         tokenAddress = _tokenAddress;
 

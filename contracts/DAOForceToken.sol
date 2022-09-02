@@ -7,7 +7,7 @@ import "hardhat/console.sol";
 
 
 // DAO governance token deployment & mint token to the token contract itself
-contract GovernanceToken is ERC20Trackable {
+contract DAOForceToken is ERC20Trackable {
     
     constructor(
         string memory _name,
