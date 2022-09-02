@@ -66,8 +66,8 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
     {
         super._afterTokenTransfer(_from, _to, _amount);
 
-        uint256 senderBalance = _balances[_from];  // balance of the sender after transfer
-        uint256 recipientBalance = _balances[_to]; // balance of the recipient after transfer
+        uint256 senderBalance = balanceOf(_from);  // balance of the sender after transfer
+        uint256 recipientBalance = balanceOf(_to);  // balance of the recipient after transfer
 
         _balanceUpdateHistoryMapping[roundNumber][_from].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: senderBalance}));
         _balanceUpdateHistoryMapping[roundNumber][_to].push(CommonStructs.BalanceCommit({blockNumber: SafeCast.toUint32(block.number), balanceAfterCommit: recipientBalance}));
