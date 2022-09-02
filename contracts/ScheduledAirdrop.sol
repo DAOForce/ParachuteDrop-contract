@@ -220,6 +220,7 @@ contract ScheduledAirDrop {
         // return actualAirdropAmount;
     }
 
+    // TODO: to fix the snapshot blocknumber?
     function initiateAirdropRound() public {  // Check: renamed (executeAirdropRound => initiateAirdropRound)
 
         uint16 roundNumber = token.getRoundNumber();
@@ -229,9 +230,10 @@ contract ScheduledAirDrop {
         // require(block.timestamp > airdropSnapshotTimestamps[roundIndex], "Cannot execute this airdrop round yet.");
 
         // Execute the Airdrop for the addresses in Airdrop allowlist.
-        for (uint i = 0; i < airdropTargetAddresses.length; i++) {
-
-            address targetAddress = airdropTargetAddresses[i];
+        
+        address[] memory _airdropTargetAddresses = airdropTargetAddresses;
+        for (uint i = 0; i < _airdropTargetAddresses.length; i++) {
+            address targetAddress = _airdropTargetAddresses[i];
             uint256 airdropUnitVolume = addressToAirdropVolumePerRound[targetAddress];  // The maximum amount of Airdrop `targetAddress` could receive from this round (with no penalty)
 
             // Add round-openning snapshot as the last snapshot of the previous round
@@ -245,6 +247,8 @@ contract ScheduledAirDrop {
             }));
 
             // compute the amount of Airdrop for this round / for certain user
+            // TODO: to charge gas fee for `computeAirdropAmounts` call to claimers?
+            // TODO: warning: for loop over dynamic array
             uint256 airdropAmountOfAddress = _computeAirdropAmounts(targetAddress, airdropUnitVolume, roundNumber);
 
             // update `_calculatedAirdropAmountPerRoundByAddress` mapping with calculated airdrop amounts by holder's addresses.
