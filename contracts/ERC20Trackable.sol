@@ -11,18 +11,16 @@ import "hardhat/console.sol";
 import {CommonStructs} from "./CommonStructs.sol";
 
 
-// TODO: inherit ERC20Votes
-// contract ERC20Trackable is ERC20, ERC20Votes {
-contract ERC20Trackable is ERC20 { 
+contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes { 
 
     // round index marker for the last executed Airdrop batch round.
-    uint16 private roundNumber = 1;  // TOOD: 0으로 초기화?
+    uint16 private roundNumber = 1;  // TODO: Initialize to Zero?
 
-    string private _DAOName; // 다오 이름
-    string private _intro; // 소개글
-    string private _image; // 프로필 이미지
-    string private _link; // 링크
-    address private _owner; // 컨트랙트 소유자
+    string private _DAOName; // DAO name
+    string private _intro; // DAO short introduction
+    string private _image; // DAO profile image url link
+    string private _link; // DAO webpage url link
+    address private _owner; // Contract owner
 
     constructor(
         string memory _name,
@@ -32,7 +30,7 @@ contract ERC20Trackable is ERC20 {
         string memory image,
         string memory link,
         address owner
-    ) ERC20 (_name, _symbol) {
+    ) ERC20 (_name, _symbol) ERC20Permit(_name) {
         _DAOName = DAOName;
         _intro = intro;
         _image = image;
@@ -105,8 +103,7 @@ contract ERC20Trackable is ERC20 {
     // Override
     function _afterTokenTransfer(address _from, address _to, uint256 _amount)  
         internal
-        // override(ERC20, ERC20Votes)
-        override(ERC20)
+        override(ERC20, ERC20Votes)
     {
         super._afterTokenTransfer(_from, _to, _amount);
 
@@ -122,8 +119,7 @@ contract ERC20Trackable is ERC20 {
     // Override
     function _mint(address _to, uint256 _amount)
         internal
-        // override(ERC20, ERC20Votes)
-        override(ERC20)
+        override(ERC20, ERC20Votes)
     {
         super._mint(_to, _amount);
     }
@@ -132,8 +128,7 @@ contract ERC20Trackable is ERC20 {
     // Override
     function _burn(address _account, uint256 _amount)
         internal
-        // override(ERC20, ERC20Votes)
-        override(ERC20)
+        override(ERC20, ERC20Votes)
     {
         super._burn(_account, _amount);
     }
