@@ -44,8 +44,8 @@ describe("Token & Airdrop contracts test", function() {
             "DAO for interstellar telescope launch",
             "some_image_url",
             "some_website_link",
-            1500,  // DECIMAL == 18
-            owner.getAddress()
+            owner.getAddress(),
+            1500  // DECIMAL == 18
         );
         await Token.deployed();
 

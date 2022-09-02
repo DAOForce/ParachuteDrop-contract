@@ -6,7 +6,6 @@ pragma solidity ^0.8.0;
 import "./IERC20.sol";
 import "./extensions/IERC20Metadata.sol";
 import "./utils/Context.sol";
-import "hardhat/console.sol";
 
 
 /**
@@ -44,12 +43,6 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     string private _name;
     string private _symbol;
 
-    string private _DAOName; // 다오 이름
-    string private _intro; // 소개글
-    string private _image; // 프로필 이미지
-    string private _link; // 링크
-
-    address private _owner; // 컨트랙트 소유자
 
     /**
      * @dev Sets the values for {name} and {symbol}.
@@ -60,22 +53,9 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * All two of these values are immutable: they can only be set once during
      * construction.
      */
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        string memory DAOName,
-        string memory intro,
-        string memory image,
-        string memory link,
-        address owner
-    ) {
+    constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
-        _DAOName = DAOName;
-        _intro = intro;
-        _image = image;
-        _link = link;
-        _owner = owner;
     }
 
     /**
@@ -93,25 +73,6 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         return _symbol;
     }
 
-    function getDAOName() public view virtual override returns (string memory) {
-        return _DAOName;
-    }
-
-    function getIntro() public view returns (string memory) {
-        return _intro;
-    }
-
-    function getImage() public view returns (string memory) {
-        return _image;
-    }
-
-    function getLink() public view returns (string memory) {
-        return _link;
-    }
-
-    function getOwner() public view returns (address) {
-        return _owner;
-    }
 
     /**
      * @dev Returns the number of decimals used to get its user representation.

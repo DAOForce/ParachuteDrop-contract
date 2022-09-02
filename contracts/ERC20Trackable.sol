@@ -3,7 +3,6 @@
 pragma solidity ^0.8.0;
 
 import "./cores/ERC20.sol";
-import "./cores/draft-ERC20Permit.sol";
 import "./ERC20Votes.sol";
 import "./cores/math/SafeCast.sol";
 import {CommonStructs} from "./CommonStructs.sol";
@@ -11,11 +10,53 @@ import "hardhat/console.sol";
 
 
 // TODO: inherit ERC20Votes
-abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
+// contract ERC20Trackable is ERC20, ERC20Votes {
+contract ERC20Trackable is ERC20 {
 
     // round index marker for the last executed Airdrop batch round.
     uint16 private roundNumber = 1;  // TOOD: 0으로 초기화?
 
+    string private _DAOName; // 다오 이름
+    string private _intro; // 소개글
+    string private _image; // 프로필 이미지
+    string private _link; // 링크
+    address private _owner; // 컨트랙트 소유자
+
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        string memory DAOName,
+        string memory intro,
+        string memory image,
+        string memory link,
+        address owner
+    ) ERC20 (_name, _symbol) {
+        _DAOName = DAOName;
+        _intro = intro;
+        _image = image;
+        _link = link;
+        _owner = owner;
+    }
+
+    function getDAOName() public view returns (string memory) {
+        return _DAOName;
+    }
+
+    function getIntro() public view returns (string memory) {
+        return _intro;
+    }
+
+    function getImage() public view returns (string memory) {
+        return _image;
+    }
+
+    function getLink() public view returns (string memory) {
+        return _link;
+    }
+
+    function getOwner() public view returns (address) {
+        return _owner;
+    }
 
     function getRoundNumber() public view returns(uint16) {
         return roundNumber;
@@ -27,8 +68,8 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
     }
 
 
-    constructor(string memory name) ERC20Permit(name) {
-    }
+    // constructor(string memory name) ERC20Permit(name) {
+    // }
 
 
     // key: roundNumber, value: mapping
@@ -62,7 +103,8 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
     // Override
     function _afterTokenTransfer(address _from, address _to, uint256 _amount)  
         internal
-        override(ERC20, ERC20Votes)
+        // override(ERC20, ERC20Votes)
+        override(ERC20)
     {
         super._afterTokenTransfer(_from, _to, _amount);
 
@@ -78,7 +120,8 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
     // Override
     function _mint(address _to, uint256 _amount)
         internal
-        override(ERC20, ERC20Votes)
+        // override(ERC20, ERC20Votes)
+        override(ERC20)
     {
         super._mint(_to, _amount);
     }
@@ -87,7 +130,8 @@ abstract contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
     // Override
     function _burn(address _account, uint256 _amount)
         internal
-        override(ERC20, ERC20Votes)
+        // override(ERC20, ERC20Votes)
+        override(ERC20)
     {
         super._burn(_account, _amount);
     }
