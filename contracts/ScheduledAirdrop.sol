@@ -3,9 +3,9 @@
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "hardhat/console.sol";
 
-import "./CommonStructs.sol";
-import "./ERC20Trackable.sol";
-import "./DAOForceToken.sol";
+import "./common/CommonStructs.sol";
+import "./ERC20/ERC20Trackable.sol";
+import "./DAOForceToken.sol";  // TODO: check if it should be replaced to Interface
 
 
 pragma solidity ^0.8.0;

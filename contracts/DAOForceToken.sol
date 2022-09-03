@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "./ERC20Trackable.sol";
+import "./ERC20/ERC20Trackable.sol";
 import "hardhat/console.sol";
 
 
