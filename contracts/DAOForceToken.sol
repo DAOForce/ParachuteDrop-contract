@@ -26,8 +26,11 @@ contract DAOForceToken is ERC20Trackable {
             _intro,
             _image,
             _link,
+            _initial_supply,
             _owner,
-            contractInfoStoreAddr) {
+            address(this),
+            contractInfoStoreAddr
+    ) {
         _mint(address(this), _initial_supply * 10 ** uint(decimals()));
     }
 }

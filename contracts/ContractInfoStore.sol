@@ -22,4 +22,8 @@ contract ContractInfoStore {
         // 3. return true
         return true;
     }
+
+    function getAllGovernanceTokenInfo() public view returns (GovernanceTokenInfo[] memory) {
+        return GovernanceTokenList;
+    }
 }

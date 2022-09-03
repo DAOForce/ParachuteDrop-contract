@@ -32,7 +32,9 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
         string memory intro,
         string memory image,
         string memory link,
+        uint256 _initial_supply,
         address owner,
+        address mintedERC20ContractAddr,
         address contractInfoStoreAddr
     ) ERC20 (_name, _symbol) ERC20Permit(_name) {
         _DAOName = DAOName;
@@ -40,7 +42,20 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
         _image = image;
         _link = link;
         _owner = owner;
+
+        CommonStructs.TokenInfo memory _tokenInfo = CommonStructs.TokenInfo(
+            _initial_supply * 10 ** uint(decimals()),
+            _name,
+            _symbol,
+            DAOName,
+            intro,
+            image,
+            link,
+            owner,
+            mintedERC20ContractAddr
+        );
         contractInfoStore = ContractInfoStore(contractInfoStoreAddr);
+        contractInfoStore.storeNewGovernanceToken(_tokenInfo);
     }
 
     function getDAOName() public view returns (string memory) {

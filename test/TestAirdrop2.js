@@ -85,10 +85,20 @@ describe("Token & Airdrop contracts test", function() {
             TOTAL_AIRDROP_VOLUME_PER_ROUND
         );
 
-        return { Token, Airdrop, owner, addr1, addr2, addr3 };
+        return { Token, Airdrop, owner, addr1, addr2, addr3, ContractInfoStore };
     }
 
     describe("Token transfer", async function() {
+        it("Should store the tokenInfo on ContractInfoStore rightafter", async () => {
+            const { Token, ContractInfoStore } = await loadFixture(deployTokenFixture);
+            const ContractInfoStoreDetails = await ContractInfoStore.getAllGovernanceTokenInfo();
+            const firstContractInfo = ContractInfoStoreDetails[0];
+
+            expect(firstContractInfo['isAirdropContractOpened']).to.be.false;
+            expect(firstContractInfo['tokenInfo']).to.include('TelescopeToken');
+            expect(firstContractInfo['tokenInfo']['tokenContractAddress']).to.equal(Token.address);
+        })
+
         it("Should transfer ERC20Trackable token between accounts successfully.", async function() {
             const {Token, owner, addr1, addr2, addr3} = await loadFixture(deployTokenFixture);
             
