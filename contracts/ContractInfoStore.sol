@@ -4,6 +4,7 @@ import {CommonStructs} from "./CommonStructs.sol";
 
 struct GovernanceTokenInfo {
     bool isAirdropContractOpened;
+    address airdropTokenAddress;
     CommonStructs.TokenInfo tokenInfo;
 }
 
@@ -13,7 +14,7 @@ contract ContractInfoStore {
 
     function storeNewGovernanceToken(CommonStructs.TokenInfo memory _tokenInfo) public returns (bool) {
         // 1. creating the GovernanceTokenInfo Struct
-        GovernanceTokenInfo memory governanceTokenInfo = GovernanceTokenInfo(false, _tokenInfo);
+        GovernanceTokenInfo memory governanceTokenInfo = GovernanceTokenInfo(false, 0x0000000000000000000000000000000000000000, _tokenInfo);
 
         // 2. push to the list
         GovernanceTokenList.push(governanceTokenInfo);

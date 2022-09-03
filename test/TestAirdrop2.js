@@ -29,6 +29,36 @@ let TOTAL_AIRDROP_VOLUME_PER_ROUND;
 
 
 describe("Token & Airdrop contracts test", function() {
+    async function deployTokenFixtureNoAirdropContract() {
+        // Signers
+        const [owner, addr1, addr2, addr3] = await ethers.getSigners();
+
+        // ContractInfoStore contract
+        const ContractInfoStoreFactory = await ethers.getContractFactory("ContractInfoStore");
+
+        const ContractInfoStore = await ContractInfoStoreFactory.deploy();
+
+        const ContractInfoStoreAddr = ContractInfoStore.address;
+
+        // Token Contract
+        const TokenContract = await ethers.getContractFactory("DAOForceToken");
+
+        // Token instance
+        const Token = await TokenContract.deploy(
+            "SigridToken",
+            "SIGJ",
+            "SigridDAO",
+            "DAO for Sigrid Jin",
+            "some_image_url",
+            "some_website_link",
+            owner.getAddress(),
+            1500,  // DECIMAL == 18
+            ContractInfoStoreAddr
+        );
+
+        return { Token, owner, addr1, addr2, addr3, ContractInfoStore };
+    }
+
     async function deployTokenFixture() {
         // Signers
         const [owner, addr1, addr2, addr3] = await ethers.getSigners();
@@ -88,17 +118,27 @@ describe("Token & Airdrop contracts test", function() {
         return { Token, Airdrop, owner, addr1, addr2, addr3, ContractInfoStore };
     }
 
-    describe("Token transfer", async function() {
+    describe("Contract Info Store Test", async () => {
         it("Should store the tokenInfo on ContractInfoStore rightafter", async () => {
-            const { Token, ContractInfoStore } = await loadFixture(deployTokenFixture);
+            // given
+            const { Token, ContractInfoStore } = await loadFixture(deployTokenFixtureNoAirdropContract);
+
+            // when
             const ContractInfoStoreDetails = await ContractInfoStore.getAllGovernanceTokenInfo();
             const firstContractInfo = ContractInfoStoreDetails[0];
 
+            // then
+            // airdrop token address is zero and not opened which is false
             expect(firstContractInfo['isAirdropContractOpened']).to.be.false;
-            expect(firstContractInfo['tokenInfo']).to.include('TelescopeToken');
+            expect(firstContractInfo['airdropTokenAddress'].toString()).to.equal("0x0000000000000000000000000000000000000000");
+
+            // check whether the token information is correct
+            expect(firstContractInfo['tokenInfo']).to.include('SigridToken');
             expect(firstContractInfo['tokenInfo']['tokenContractAddress']).to.equal(Token.address);
         })
+    })
 
+    describe("Token transfer", async function() {
         it("Should transfer ERC20Trackable token between accounts successfully.", async function() {
             const {Token, owner, addr1, addr2, addr3} = await loadFixture(deployTokenFixture);
             
