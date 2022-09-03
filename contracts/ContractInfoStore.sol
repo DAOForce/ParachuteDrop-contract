@@ -10,6 +10,11 @@ struct GovernanceTokenInfo {
     address[] airdropTargetAddressList;
 }
 
+struct MatchedGovAirdropTokenDTO {
+    address airdropTokenAddress;
+    address governanceTokenAddress;
+}
+
 contract ContractInfoStore {
     event NewGovernanceTokenStored(address governanceTokenAddr, string message);
     GovernanceTokenInfo[] GovernanceTokenList;
@@ -46,5 +51,33 @@ contract ContractInfoStore {
         GovernanceTokenList[foundGovTokenId].airdropTokenAddress = airdropTokenAddr;
         GovernanceTokenList[foundGovTokenId].airdropTargetAddressList = _airdropTargetAddresses;
         return true;
+    }
+
+    function findAirdropTokenAddressListByUserAddr(address userTokenAddr) public view returns (MatchedGovAirdropTokenDTO[] memory) {
+        GovernanceTokenInfo[] memory governanceTokenInfoList = getAllGovernanceTokenInfo();
+        uint allTokenAmounts = governanceTokenInfoList.length;
+
+        MatchedGovAirdropTokenDTO[] memory matchedGovAirdropTokenDTOList = new MatchedGovAirdropTokenDTO[](allTokenAmounts);
+        address[] memory matchedAirdropTokenAddressList = new address[](allTokenAmounts);
+        address[] memory matchedGovernanceTokenAddressList = new address[](allTokenAmounts);
+
+        for (uint i = 0; i < governanceTokenInfoList.length; i++) {
+            GovernanceTokenInfo memory nowGovernanceTokenInfo = governanceTokenInfoList[i];
+            address[] memory nowAirdropAddressList = nowGovernanceTokenInfo.airdropTargetAddressList;
+            for (uint j = 0; j < nowAirdropAddressList.length; j++) {
+                if (nowAirdropAddressList[j] == userTokenAddr) {
+                    matchedAirdropTokenAddressList[i] = nowGovernanceTokenInfo.airdropTokenAddress;
+                    matchedGovernanceTokenAddressList[i] = nowGovernanceTokenInfo.tokenInfo.tokenContractAddress;
+                    console.log("matchedAirdropTokenAddressList", matchedAirdropTokenAddressList[i]);
+                    break;
+                }
+            }
+        }
+
+        for (uint k = 0; k < matchedAirdropTokenAddressList.length; k++) {
+            matchedGovAirdropTokenDTOList[k] = MatchedGovAirdropTokenDTO(matchedAirdropTokenAddressList[k], matchedGovernanceTokenAddressList[k]);
+        }
+
+        return matchedGovAirdropTokenDTOList;
     }
 }
