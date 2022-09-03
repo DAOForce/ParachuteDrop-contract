@@ -33,6 +33,13 @@ describe("Token & Airdrop contracts test", function() {
         // Signers
         const [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
+        // ContractInfoStore contract
+        const ContractInfoStoreFactory = await ethers.getContractFactory("ContractInfoStore");
+
+        const ContractInfoStore = await ContractInfoStoreFactory.deploy();
+
+        const ContractInfoStoreAddr = ContractInfoStore.address;
+
         // Token Contract
         const TokenContract = await ethers.getContractFactory("DAOForceToken");
 
@@ -45,8 +52,10 @@ describe("Token & Airdrop contracts test", function() {
             "some_image_url",
             "some_website_link",
             owner.getAddress(),
-            1500  // DECIMAL == 18
+            1500,  // DECIMAL == 18
+            ContractInfoStoreAddr
         );
+
         await Token.deployed();
 
         // Airdrop Contract

@@ -9,9 +9,12 @@ import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "hardhat/console.sol";
 
 import {CommonStructs} from "./CommonStructs.sol";
+import "./ContractInfoStore.sol";
 
 
-contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes { 
+contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
+
+    ContractInfoStore contractInfoStore;
 
     // round index marker for the last executed Airdrop batch round.
     uint16 private roundNumber = 1;  // TODO: Initialize to Zero?
@@ -29,13 +32,15 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
         string memory intro,
         string memory image,
         string memory link,
-        address owner
+        address owner,
+        address contractInfoStoreAddr
     ) ERC20 (_name, _symbol) ERC20Permit(_name) {
         _DAOName = DAOName;
         _intro = intro;
         _image = image;
         _link = link;
         _owner = owner;
+        contractInfoStore = ContractInfoStore(contractInfoStoreAddr);
     }
 
     function getDAOName() public view returns (string memory) {
