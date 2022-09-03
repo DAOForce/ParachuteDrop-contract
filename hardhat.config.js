@@ -13,6 +13,10 @@ module.exports = {
     evmos: {
       url: "https://eth.bd.evmos.dev:8545",
       accounts: [process.env.PRIVATE_KEY_EVMOS]
+    },
+    rinkeby: {
+      url: "https://ethereum-rinkeby-rpc.allthatnode.com",
+      accounts: [process.env.PRIVATE_KEY_ETH_TESTNET]
     }
   }
 };

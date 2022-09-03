@@ -1,6 +1,7 @@
 node_modules
 .idea
 .gitmessage.txt
+.DS_Store
 
 #Hardhat files
 cache
