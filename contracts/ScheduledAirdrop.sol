@@ -15,6 +15,8 @@ pragma solidity ^0.8.0;
 
 contract ScheduledAirDrop {
 
+    ContractInfoStore public contractInfoStore;
+
     address public tokenAddress;
 
     uint32 public numOfTotalRounds;
@@ -53,8 +55,11 @@ contract ScheduledAirDrop {
         uint32 _numOfTotalRounds,
         address[] memory _airdropTargetAddresses,
         uint256[] memory _airdropAmountsPerRoundByAddress,
-        uint256 _totalAirdropVolumePerRound
+        uint256 _totalAirdropVolumePerRound,
+        address ContractInfoStoreAddr
     ){
+        contractInfoStore = ContractInfoStore(ContractInfoStoreAddr);
+        contractInfoStore.addAirdropTokenAddress(_tokenAddress, address(this));
         token = DAOForceToken(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
         // token = ERC20Trackable(_tokenAddress);
         tokenAddress = _tokenAddress;

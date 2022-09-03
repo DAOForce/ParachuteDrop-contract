@@ -1,6 +1,7 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 import {CommonStructs} from "./CommonStructs.sol";
+import "hardhat/console.sol";
 
 struct GovernanceTokenInfo {
     bool isAirdropContractOpened;
@@ -26,5 +27,22 @@ contract ContractInfoStore {
 
     function getAllGovernanceTokenInfo() public view returns (GovernanceTokenInfo[] memory) {
         return GovernanceTokenList;
+    }
+
+    function findGovernanceTokenListIdByAddr(address governanceTokenAddr) public view returns (uint){
+        for (uint i = 0; i < GovernanceTokenList.length; i++) {
+            if (GovernanceTokenList[i].tokenInfo.tokenContractAddress == governanceTokenAddr) {
+                console.log(" FOUND TOKEN ADDR >>>>>>>>>>>>>>>>>>>>>> ", GovernanceTokenList[i].tokenInfo.tokenContractAddress);
+                return i;
+            }
+        }
+        revert("Not Found Governance Token");
+    }
+
+    function addAirdropTokenAddress(address governanceTokenAddr, address airdropTokenAddr) public returns (bool) {
+        uint foundGovTokenId = findGovernanceTokenListIdByAddr(governanceTokenAddr);
+        GovernanceTokenList[foundGovTokenId].isAirdropContractOpened = true;
+        GovernanceTokenList[foundGovTokenId].airdropTokenAddress = airdropTokenAddr;
+        return true;
     }
 }

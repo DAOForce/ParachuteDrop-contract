@@ -112,7 +112,8 @@ describe("Token & Airdrop contracts test", function() {
             NUM_OF_TOTAL_ROUNDS,
             AIRDROP_TARGET_ADDRESSES,
             AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS,
-            TOTAL_AIRDROP_VOLUME_PER_ROUND
+            TOTAL_AIRDROP_VOLUME_PER_ROUND,
+            ContractInfoStoreAddr
         );
 
         return { Token, Airdrop, owner, addr1, addr2, addr3, ContractInfoStore };
@@ -135,6 +136,50 @@ describe("Token & Airdrop contracts test", function() {
             // check whether the token information is correct
             expect(firstContractInfo['tokenInfo']).to.include('SigridToken');
             expect(firstContractInfo['tokenInfo']['tokenContractAddress']).to.equal(Token.address);
+        })
+
+        it("Should store the airdropTokenInfo on ContractInfoStore after initiating it", async () => {
+            // given
+            const {Token, addr1, addr2, addr3, ContractInfoStore} = await loadFixture(deployTokenFixtureNoAirdropContract);
+
+            // when
+            // Airdrop Contract
+            const AirdropContract = await ethers.getContractFactory("ScheduledAirDrop");
+
+            TOKEN_ADDRESS = Token.address;
+            AIRDROP_SNAPSHOT_TIMESTAMPS = [
+                Math.round(new Date().setMonth(new Date().getMonth() - 3) / 1000),
+                Math.round(new Date().setMonth(new Date().getMonth() - 2) / 1000),
+                Math.round(new Date().setMonth(new Date().getMonth() - 1) / 1000),
+            ];  // 과거 날짜 데이터
+            ROUND_DURATION_IN_DAYS = 7000; // TODO: 현실적인 기준으로 변경
+            NUM_OF_TOTAL_ROUNDS = 5;
+            AIRDROP_TARGET_ADDRESSES = [addr1.address, addr2.address, addr3.address];
+            AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS = [utils.parseEther("30"), utils.parseEther("50"), utils.parseEther("70")];
+            TOTAL_AIRDROP_VOLUME_PER_ROUND = utils.parseEther("150");
+
+            const ContractInfoStoreAddr = ContractInfoStore.address;
+
+            console.log("input data >>>> Airdrop timestamps: ", AIRDROP_SNAPSHOT_TIMESTAMPS);
+
+            const Airdrop = await AirdropContract.deploy(
+                TOKEN_ADDRESS,
+                AIRDROP_SNAPSHOT_TIMESTAMPS,
+                ROUND_DURATION_IN_DAYS,
+                NUM_OF_TOTAL_ROUNDS,
+                AIRDROP_TARGET_ADDRESSES,
+                AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS,
+                TOTAL_AIRDROP_VOLUME_PER_ROUND,
+                ContractInfoStoreAddr
+            );
+
+            // then
+            const ContractInfoStoreDetails = await ContractInfoStore.getAllGovernanceTokenInfo();
+            const firstContractInfo = ContractInfoStoreDetails[0];
+
+            // airdrop token address is zero and not opened which is false
+            expect(firstContractInfo['isAirdropContractOpened']).to.be.true;
+            expect(firstContractInfo['airdropTokenAddress']).to.equal(Airdrop.address);
         })
     })
 
