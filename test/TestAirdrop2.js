@@ -51,7 +51,7 @@ describe("Token & Airdrop contracts test", function() {
 
         // Airdrop Contract
         const AirdropContract = await ethers.getContractFactory("ScheduledAirDrop");
-        
+
         TOKEN_ADDRESS = Token.address;
         AIRDROP_SNAPSHOT_TIMESTAMPS = [
             Math.round(new Date().setMonth(new Date().getMonth() - 3) / 1000),
@@ -75,6 +75,8 @@ describe("Token & Airdrop contracts test", function() {
             AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS,
             TOTAL_AIRDROP_VOLUME_PER_ROUND
         );
+
+        await Airdrop.deployed();
 
         return { Token, Airdrop, owner, addr1, addr2, addr3 };
     }

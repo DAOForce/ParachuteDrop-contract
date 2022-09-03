@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 
-contract GovernorDAOForce is Governor, GovernorSettings, GovernorCountingSimple, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
+contract DAOForceGovernor is Governor, GovernorSettings, GovernorCountingSimple, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
     
     // GovernorSettings(1 block voting delay, 1 week voting period in block numbers (1.9 seconds avg. blocktime of evmos chain), 0 proposal threshold(token in wei))
     // GovernorVotesQuorumFraction(10% quorum)

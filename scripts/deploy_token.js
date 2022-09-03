@@ -22,40 +22,48 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const Token = await ethers.getContractFactory("TelescopeToken");
-  const token = await Token.deploy("TelescopeToken", "TELE",
-  "Telescope DAO", "This DAO is for Telescope",
-  "https://www.istockphoto.com/photos/astronomy-telescope-no-people-white-background-isolated-on-white",
-  "https://telescope.io", 1000000, await deployer.getAddress());
+  // Token Contract
+  const TokenContract = await ethers.getContractFactory("DAOForceToken");
 
-  await token.deployed();
+  // Token instance
+  const Token = await TokenContract.deploy(
+      "TelescopeToken",
+      "TELE",
+      "TelescopeDAO",
+      "DAO for interstellar telescope launch",
+      "some_image_url",
+      "some_website_link",
+      owner.getAddress(),
+      1500  // DECIMAL == 18
+  );
+  await Token.deployed();
 
-  console.log("Token address:", token.address);
+  console.log("Deployed Token address:", Token.address);
 
   // We also save the contract's artifacts and address in the frontend directory
   // saveFrontendFiles(token);
 }
 
-function saveFrontendFiles(token) {
-  const fs = require("fs");
-  const contractsDir = path.join(__dirname, "..", "frontend", "src", "contracts");
+// function saveFrontendFiles(token) {
+//   const fs = require("fs");
+//   const contractsDir = path.join(__dirname, "..", "frontend", "src", "contracts");
 
-  if (!fs.existsSync(contractsDir)) {
-    fs.mkdirSync(contractsDir);
-  }
+//   if (!fs.existsSync(contractsDir)) {
+//     fs.mkdirSync(contractsDir);
+//   }
 
-  fs.writeFileSync(
-    path.join(contractsDir, "contract-address.json"),
-    JSON.stringify({ Token: token.address }, undefined, 2)
-  );
+//   fs.writeFileSync(
+//     path.join(contractsDir, "contract-address.json"),
+//     JSON.stringify({ Token: token.address }, undefined, 2)
+//   );
 
-  const TokenArtifact = artifacts.readArtifactSync("TelescopeToken");
+//   const TokenArtifact = artifacts.readArtifactSync("TelescopeToken");
 
-  fs.writeFileSync(
-    path.join(contractsDir, "Token.json"),
-    JSON.stringify(TokenArtifact, null, 2)
-  );
-}
+//   fs.writeFileSync(
+//     path.join(contractsDir, "Token.json"),
+//     JSON.stringify(TokenArtifact, null, 2)
+//   );
+// }
 
 main()
   .then(() => process.exit(0))
