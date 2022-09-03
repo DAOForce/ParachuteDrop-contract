@@ -7,6 +7,7 @@ struct GovernanceTokenInfo {
     bool isAirdropContractOpened;
     address airdropTokenAddress;
     CommonStructs.TokenInfo tokenInfo;
+    address[] airdropTargetAddressList;
 }
 
 contract ContractInfoStore {
@@ -15,7 +16,7 @@ contract ContractInfoStore {
 
     function storeNewGovernanceToken(CommonStructs.TokenInfo memory _tokenInfo) public returns (bool) {
         // 1. creating the GovernanceTokenInfo Struct
-        GovernanceTokenInfo memory governanceTokenInfo = GovernanceTokenInfo(false, 0x0000000000000000000000000000000000000000, _tokenInfo);
+        GovernanceTokenInfo memory governanceTokenInfo = GovernanceTokenInfo(false, 0x0000000000000000000000000000000000000000, _tokenInfo, new address[](0));
 
         // 2. push to the list
         GovernanceTokenList.push(governanceTokenInfo);
@@ -39,10 +40,11 @@ contract ContractInfoStore {
         revert("Not Found Governance Token");
     }
 
-    function addAirdropTokenAddress(address governanceTokenAddr, address airdropTokenAddr) public returns (bool) {
+    function addAirdropTokenAddress(address governanceTokenAddr, address airdropTokenAddr, address[] calldata _airdropTargetAddresses) public returns (bool) {
         uint foundGovTokenId = findGovernanceTokenListIdByAddr(governanceTokenAddr);
         GovernanceTokenList[foundGovTokenId].isAirdropContractOpened = true;
         GovernanceTokenList[foundGovTokenId].airdropTokenAddress = airdropTokenAddr;
+        GovernanceTokenList[foundGovTokenId].airdropTargetAddressList = _airdropTargetAddresses;
         return true;
     }
 }

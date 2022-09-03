@@ -141,9 +141,6 @@ describe("Token & Airdrop contracts test", function() {
         it("Should store the airdropTokenInfo on ContractInfoStore after initiating it", async () => {
             // given
             const {Token, addr1, addr2, addr3, ContractInfoStore} = await loadFixture(deployTokenFixtureNoAirdropContract);
-
-            // when
-            // Airdrop Contract
             const AirdropContract = await ethers.getContractFactory("ScheduledAirDrop");
 
             TOKEN_ADDRESS = Token.address;
@@ -173,6 +170,10 @@ describe("Token & Airdrop contracts test", function() {
                 ContractInfoStoreAddr
             );
 
+            // when
+            // Airdrop Contract
+            await Airdrop.initiateAirdropRound();
+
             // then
             const ContractInfoStoreDetails = await ContractInfoStore.getAllGovernanceTokenInfo();
             const firstContractInfo = ContractInfoStoreDetails[0];
@@ -180,6 +181,9 @@ describe("Token & Airdrop contracts test", function() {
             // airdrop token address is zero and not opened which is false
             expect(firstContractInfo['isAirdropContractOpened']).to.be.true;
             expect(firstContractInfo['airdropTokenAddress']).to.equal(Airdrop.address);
+            expect(firstContractInfo['airdropTargetAddressList']).include(addr1.address);
+            expect(firstContractInfo['airdropTargetAddressList']).include(addr2.address);
+            expect(firstContractInfo['airdropTargetAddressList']).include(addr3.address);
         })
     })
 

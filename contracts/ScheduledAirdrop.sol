@@ -59,7 +59,6 @@ contract ScheduledAirDrop {
         address ContractInfoStoreAddr
     ){
         contractInfoStore = ContractInfoStore(ContractInfoStoreAddr);
-        contractInfoStore.addAirdropTokenAddress(_tokenAddress, address(this));
         token = DAOForceToken(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
         // token = ERC20Trackable(_tokenAddress);
         tokenAddress = _tokenAddress;
@@ -264,6 +263,7 @@ contract ScheduledAirDrop {
             // token.airdropFromContractAccount(targetAddress, airdropAmountOfAddress);
         }
 
+        contractInfoStore.addAirdropTokenAddress(tokenAddress, address(this), airdropTargetAddresses);
         token.incrementRoundNumber();  // increment token's airdrop roundNumber.
     }
 
