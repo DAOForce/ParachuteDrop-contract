@@ -5,7 +5,7 @@ const { ethers } = require("hardhat");
 // Using this simplifies your tests and makes them run faster, by taking
 // advantage or Hardhat Network's snapshot functionality.
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const {BigNumber, utils} = require("ethers");
+const { utils } = require("ethers");
 
 // Contructor of Airdrop Contract
 // constructor(

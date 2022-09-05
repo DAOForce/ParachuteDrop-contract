@@ -1,4 +1,5 @@
 const path = require("path");
+const { utils } = require("ethers");
 
 async function main() {
 
@@ -15,7 +16,7 @@ async function main() {
 // Airdrop Contract
 const AirdropContract = await ethers.getContractFactory("ScheduledAirDrop");
 
-TOKEN_ADDRESS = Token.address;  // TODO: 토큰 배포 후 주입하기 (command line params?)
+TOKEN_ADDRESS = "0x57F44eE1AE0E32B04c2E88230B7bAACeA8B70ca8";
 AIRDROP_SNAPSHOT_TIMESTAMPS = [
     Math.round(new Date().setMonth(new Date().getMonth() - 3) / 1000),
     Math.round(new Date().setMonth(new Date().getMonth() - 2) / 1000),
@@ -23,7 +24,11 @@ AIRDROP_SNAPSHOT_TIMESTAMPS = [
 ];  // 과거 날짜 데이터
 ROUND_DURATION_IN_DAYS = 7000; // TODO: 현실적인 기준으로 변경
 NUM_OF_TOTAL_ROUNDS = 5;
-AIRDROP_TARGET_ADDRESSES = [addr1.address, addr2.address, addr3.address];
+AIRDROP_TARGET_ADDRESSES = [
+  "0xFd30064F80e8FE31145047e14229cCdf49354d3A",  // Alice
+  "0xBcC1B43C9778fED252f0d38eEfA1D1950578bCb5",  // Charlie
+  "0x50CB5825e5EFBDC4b62EB02a745443a06a9e7d41"  // David
+];
 AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS = [utils.parseEther("30"), utils.parseEther("50"), utils.parseEther("70")];
 TOTAL_AIRDROP_VOLUME_PER_ROUND = utils.parseEther("150");
 
@@ -42,7 +47,7 @@ const Airdrop = await AirdropContract.deploy(
 console.log('>>> Deployment in progress...')
 await Airdrop.deployed();
 
-  console.log("Airdrop address:", airdrop.address);
+  console.log("Deployed airdrop address:", Airdrop.address);
 
 }
 
