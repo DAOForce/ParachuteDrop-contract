@@ -12,6 +12,7 @@ contract DAOForceGovernor is Governor, GovernorSettings, GovernorCountingSimple,
     
     // GovernorSettings(1 block voting delay, 1 week voting period in block numbers (1.9 seconds avg. blocktime of evmos chain), 0 proposal threshold(token in wei))
     // GovernorVotesQuorumFraction(10% quorum)
+    // GovernorVotes(_token) => token address to IVotes type?
     constructor(IVotes _token, TimelockController _timelock)
         Governor("GovernorDAOForce")
         GovernorSettings(1, 318316, 0)

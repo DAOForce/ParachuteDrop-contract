@@ -15,7 +15,10 @@ pragma solidity ^0.8.0;
 
 contract ScheduledAirDrop {
 
-    address public tokenAddress;
+    // Airdrop token
+
+    // address public tokenAddress;  // TODO: option 1
+    DAOForceToken public token;  // TODO: option 2
 
     uint32 public numOfTotalRounds;
     uint32 public roundDurationInDays;
@@ -44,10 +47,11 @@ contract ScheduledAirDrop {
         ...
     } */
 
-    DAOForceToken token;
+    // DAOForceToken token;  // TODO: check: inject contract instance (address) as a constructor param.
 
     constructor(
-        address _tokenAddress,
+        // address _tokenAddress,  // TODO: option 1
+        DAOForceToken _tokenAddress,  // TODO: option 2
         uint64[] memory _airdropSnapshotTimestamps,
         uint32 _roundDurationInDays,
         uint32 _numOfTotalRounds,
@@ -55,9 +59,9 @@ contract ScheduledAirDrop {
         uint256[] memory _airdropAmountsPerRoundByAddress,
         uint256 _totalAirdropVolumePerRound
     ){
-        token = DAOForceToken(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
-        // token = ERC20Trackable(_tokenAddress);
-        tokenAddress = _tokenAddress;
+        // token = DAOForceToken(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
+        // token = ERC20Trackable(_tokenAddress);  // TODO: option 1 - type casting to contract type here(option 1)? or get from costructor(option 2)?
+        token = _tokenAddress;
 
         // Only the owner of the token contract can deploy the airdrop contract
         require(msg.sender == token.getOwner());
@@ -88,13 +92,13 @@ contract ScheduledAirDrop {
         _tokenInfo.image = token.getImage();
         _tokenInfo.link = token.getLink();
         _tokenInfo.owner = token.getOwner();
-        _tokenInfo.tokenContractAddress = tokenAddress;
+        _tokenInfo.tokenContractAddress = address(token);  // TODO: Check if applicable
         return _tokenInfo;
     }
 
     // Constructor input params info getters
     function getTokenAddress() public view returns (address) {
-        return tokenAddress;
+        return address(token);
     }
 
     function getAirdropSnapshotTimestamps() public view returns (uint64[] memory) {
