@@ -1,10 +1,10 @@
 const { abi } = require('../abi/airdropABI');
-const { contractAddresses, rpcProviderUrl } = require('./deployInfo');
+const { addresses, rpcProviderUrl } = require('./deployInfo');
 const ethers = require('ethers');
 
 const provider = new ethers.providers.JsonRpcProvider(rpcProviderUrl);
 
-const address = contractAddresses.ScheduledAirdrop;
+const address = addresses.ScheduledAirdrop;
 
 const privateKey = process.env.CHARLIE_PRIVATE_KEY;  // Charlie
 

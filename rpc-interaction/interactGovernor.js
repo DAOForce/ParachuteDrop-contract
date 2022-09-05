@@ -1,10 +1,10 @@
 const { abi } = require('../abi/governorABI');
-const { contractAddresses, rpcProviderUrl } = require('./deployInfo');
+const { addresses, rpcProviderUrl } = require('./deployInfo');
 const ethers = require('ethers');
 
 const provider = new ethers.providers.JsonRpcProvider(rpcProviderUrl);
 
-const address = contractAddresses.DAOForceGovernor;
+const address = addresses.DAOForceGovernor;
 
 const privateKey = process.env.DEPLOY_PRIVATE_KEY;  // Charlie
 
