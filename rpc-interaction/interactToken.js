@@ -1,17 +1,18 @@
-const { abi } = require('../abi/abi_token');
+const { abi } = require('../abi/tokenABI');
+const { contractAddresses, rpcProviderUrl } = require('./deployInfo');
+const ethers = require('ethers');
 
-var ethers = require('ethers');
-var provider = new ethers.providers.JsonRpcProvider("https://ethereum-goerli-rpc.allthatnode.com");
+const provider = new ethers.providers.JsonRpcProvider(rpcProviderUrl);
 
-var address  = '0x598a8F9AEBB6693D9763A70a072B997112Ca654e';  // token contract address
+const address = contractAddresses.DAOForceToken;
 
-var privateKey = process.env.DEPLOY_PRIVATE_KEY;
+const privateKey = process.env.DEPLOY_PRIVATE_KEY;
 
-var wallet = new ethers.Wallet(privateKey,provider);
+const wallet = new ethers.Wallet(privateKey,provider);
 
-var contract = new ethers.Contract(address,abi,wallet);
+const contract = new ethers.Contract(address,abi,wallet);
 
-var sendPromise = contract.getRoundNumber();
+const sendPromise = contract.getRoundNumber();
 
 
 sendPromise.then(function(transaction){
