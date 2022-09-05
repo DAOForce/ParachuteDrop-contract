@@ -17,6 +17,10 @@ module.exports = {
     rinkeby: {
       url: "https://ethereum-rinkeby-rpc.allthatnode.com",
       accounts: [process.env.PRIVATE_KEY_EVMOS]
+    },
+    goerli: {
+      url: "https://ethereum-goerli-rpc.allthatnode.com",
+      accounts: [process.env.PRIVATE_KEY_EVMOS]
     }
   }
 };

@@ -1,9 +1,9 @@
 const { abi } = require('../abi/abi_token');
 
 var ethers = require('ethers');
-var provider = new ethers.providers.JsonRpcProvider("https://eth.bd.evmos.dev:8545");
+var provider = new ethers.providers.JsonRpcProvider("https://ethereum-goerli-rpc.allthatnode.com");
 
-var address  = '0x29A4976E8F6D11A4D933e9FBB543c74D6F16387F';  // token contract address
+var address  = '0x598a8F9AEBB6693D9763A70a072B997112Ca654e';  // token contract address
 
 var privateKey = process.env.PRIVATE_KEY_EVMOS;
 

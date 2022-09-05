@@ -16,7 +16,7 @@ async function main() {
 // Airdrop Contract
 const AirdropContract = await ethers.getContractFactory("ScheduledAirDrop");
 
-TOKEN_ADDRESS = "0x57F44eE1AE0E32B04c2E88230B7bAACeA8B70ca8";
+TOKEN_ADDRESS = "0x598a8F9AEBB6693D9763A70a072B997112Ca654e";
 AIRDROP_SNAPSHOT_TIMESTAMPS = [
     Math.round(new Date().setMonth(new Date().getMonth() - 3) / 1000),
     Math.round(new Date().setMonth(new Date().getMonth() - 2) / 1000),
