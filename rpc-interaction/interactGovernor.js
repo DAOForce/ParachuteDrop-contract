@@ -1,18 +1,18 @@
 const { abi } = require('../abi/abi_governor');
+const { contractAddresses } = require('./deployInfo');
+const ethers = require('ethers');
 
-var ethers = require('ethers');
+const provider = new ethers.providers.JsonRpcProvider("https://ethereum-goerli-rpc.allthatnode.com");
 
-var provider = new ethers.providers.JsonRpcProvider("https://ethereum-goerli-rpc.allthatnode.com");
+const address = contractAddresses.DAOForceGovernonce;
 
-var address  = '0x789084347E263B86972bEC32c244aae72A7fB094';
+const privateKey = process.env.CHARLIE_PRIVATE_KEY;  // Charlie
 
-var privateKey = process.env.CHARLIE_PRIVATE_KEY;  // Charlie
+const wallet = new ethers.Wallet(privateKey,provider);
 
-var wallet = new ethers.Wallet(privateKey,provider);
+const contract = new ethers.Contract(address,abi,wallet);
 
-var contract = new ethers.Contract(address,abi,wallet);
-
-var sendPromise = contract.claimAirdrop(1);
+const sendPromise = contract.claimAirdrop(1);
 
 sendPromise.then(function(transaction){
   console.log(transaction);
