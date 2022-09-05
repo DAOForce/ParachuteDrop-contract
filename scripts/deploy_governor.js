@@ -16,11 +16,12 @@ async function main() {
 const GovernorContract = await ethers.getContractFactory("DAOForceGovernor");
 
 
-const Governor = await AirdropContract.deploy();
+const Governor = await GovernorContract.deploy();
 
+console.log('>>> Deployment in progress...')
 await Governor.deployed();
 
-  console.log("Governor address:", airdrop.address);
+  console.log("Deployed Governor address:", airdrop.address);
 
 }
 

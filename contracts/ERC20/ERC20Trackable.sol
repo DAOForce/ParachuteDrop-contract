@@ -28,14 +28,13 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
         string memory DAOName,
         string memory intro,
         string memory image,
-        string memory link,
-        address owner
+        string memory link
     ) ERC20 (_name, _symbol) ERC20Permit(_name) {
         _DAOName = DAOName;
         _intro = intro;
         _image = image;
         _link = link;
-        _owner = owner;
+        _owner = msg.sender;
     }
 
     function getDAOName() public view returns (string memory) {

@@ -44,7 +44,6 @@ describe("Token & Airdrop contracts test", function() {
             "DAO for interstellar telescope launch",
             "some_image_url",
             "some_website_link",
-            owner.getAddress(),
             1500  // DECIMAL == 18
         );
         await Token.deployed();
@@ -236,7 +235,7 @@ describe("Token & Airdrop contracts test", function() {
             console.log("addr1: ", utils.formatEther(await Token.balanceOf(addr1.address)), tokenSymbol);
             console.log("addr2: ", utils.formatEther(await Token.balanceOf(addr2.address)), tokenSymbol);
             console.log("addr3: ", utils.formatEther(await Token.balanceOf(addr3.address)), tokenSymbol);
-            
+
         });
     });
 });

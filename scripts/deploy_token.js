@@ -15,6 +15,7 @@ async function main() {
 
   // ethers is available in the global scope
   const [deployer] = await ethers.getSigners();
+  console.log('>>>>> Signers list: ', await ethers.getSigners());
   console.log(
     "Deploying the contracts with the account:",
     await deployer.getAddress()
@@ -30,12 +31,12 @@ async function main() {
       "TelescopeToken",
       "TELE",
       "TelescopeDAO",
-      "DAO for interstellar telescope launch",
+      "DAO for interstellar telescope launch.",
       "some_image_url",
       "some_website_link",
-      owner.getAddress(),
       1500  // DECIMAL == 18
   );
+  console.log('>>> Deployment in progress...')
   await Token.deployed();
 
   console.log("Deployed Token address:", Token.address);

@@ -39,6 +39,7 @@ const Airdrop = await AirdropContract.deploy(
     TOTAL_AIRDROP_VOLUME_PER_ROUND
 );
 
+console.log('>>> Deployment in progress...')
 await Airdrop.deployed();
 
   console.log("Airdrop address:", airdrop.address);

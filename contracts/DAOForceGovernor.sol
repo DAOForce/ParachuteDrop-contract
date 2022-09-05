@@ -6,9 +6,10 @@ import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
+import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";  
 
 contract DAOForceGovernor is Governor, GovernorSettings, GovernorCountingSimple, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
+
     
     // GovernorSettings(1 block voting delay, 1 week voting period in block numbers (1.9 seconds avg. blocktime of evmos chain), 0 proposal threshold(token in wei))
     // GovernorVotesQuorumFraction(10% quorum)
@@ -54,6 +55,7 @@ contract DAOForceGovernor is Governor, GovernorSettings, GovernorCountingSimple,
         public
         view
         override(Governor, GovernorTimelockControl)
+
         returns (ProposalState)
     {
         return super.state(proposalId);
