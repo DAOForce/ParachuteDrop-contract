@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: CC0-1.0
-
+// SPDX-License-Identifier: MIT
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "hardhat/console.sol";
 
@@ -266,7 +265,7 @@ contract ScheduledAirDrop {
             // token.airdropFromContractAccount(targetAddress, airdropAmountOfAddress);
         }
 
-        contractInfoStore.addAirdropTokenAddress(tokenAddress, address(this), airdropTargetAddresses);
+        contractInfoStore.addAirdropTokenAddress(address(token), address(this), airdropTargetAddresses);
         token.incrementRoundNumber();  // increment token's airdrop roundNumber.
     }
 

@@ -1,6 +1,8 @@
-pragma solidity >=0.7.0 <0.9.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.4;
 
-import {CommonStructs} from "./CommonStructs.sol";
+
+import {CommonStructs} from "./common/CommonStructs.sol";
 import "hardhat/console.sol";
 
 struct GovernanceTokenInfo {
