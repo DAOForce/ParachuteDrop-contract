@@ -17,3 +17,5 @@ const sendPromise = contract.getRoundNumber();
 sendPromise.then(function(transaction){
   console.log(transaction);
 });
+
+// 토큰 balance 조회하는 인터페이스 만들기
