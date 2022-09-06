@@ -13,7 +13,12 @@ const wallet = new ethers.Wallet(privateKey,provider);
 
 const contract = new ethers.Contract(address,abi,wallet);
 
-// contract methods promise
+/**
+ * Contract methods promise
+*/
+
+const ROUND = 1;
+const ADDRESS = process.env.CHARLIE_ADDRESS;
 
 const getTokenInfoPromise = contract.getTokenInfo();
 const getTokenAddressPromise = contract.getTokenAddress();
@@ -21,9 +26,6 @@ const getAirdropSnapshotTimestampsPromise = contract.getAirdropSnapshotTimestamp
 const getRoundDurationInDaysPromise = contract.getRoundDurationInDays();
 const getNumOfTotalRoundsPromise = contract.getNumOfTotalRounds();
 const getAirdropTargetAddressesPromise = contract.getAirdropTargetAddresses();
-
-const ADDRESS = process.env.CHARLIE_ADDRESS;
-const ROUND = 1;
 
 const getAirdropAmountPerRoundByAddressPromise = contract.getAirdropAmountPerRoundByAddress(ADDRESS);
 
@@ -36,7 +38,9 @@ const getInitialBlockNumberByRoundPromise = contract.getInitialBlockNumberByRoun
 const claimAirdropPromise = contract.claimAirdrop(ROUND);
 
 
-// Method call transaction sender
+/**
+ * Method call transaction sender
+*/
 
 const varNameToString = varObj => Object.keys(varObj)[0]
 function sendTransaction(promise, methodPromiseName) {
@@ -48,6 +52,8 @@ function sendTransaction(promise, methodPromiseName) {
 }
 
 
-// Send method call transactions
+/**
+ * Send method call transactions
+*/
 
 sendTransaction(getTokenAddressPromise, varNameToString({ getTokenAddressPromise }));

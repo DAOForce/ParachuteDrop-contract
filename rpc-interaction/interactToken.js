@@ -12,10 +12,33 @@ const wallet = new ethers.Wallet(privateKey,provider);
 
 const contract = new ethers.Contract(address,abi,wallet);
 
-const sendPromise = contract.getRoundNumber();
+/**
+ * Contract methods promise
+*/
 
-sendPromise.then(function(transaction){
-  console.log(transaction);
-});
+const ROUND = 1;
+const ADDRESS = process.env.CHARLIE_ADDRESS;
 
-// 토큰 balance 조회하는 인터페이스 만들기
+// ERC20 getters
+const totalSupplyPromise = contract.totalSupply();
+const balanceOfPromise = contract.balanceOf(ADDRESS);
+
+// ERC20Votes getters
+const POS = 1;
+const BLOCKNUMBER = 100000;
+
+const checkpointsPromise = contract.checkpoints(ADDRESS, POS);
+const numCheckpointsPromise = contract.numCheckpoints(ADDRESS);
+const delegatesPromise = contract.delegates(ADDRESS);
+const getVotesPromise = contract.getVotes(ADDRESS);
+const getPastVotesPromise = contract.getPastVotes(ADDRESS, BLOCKNUMBER);
+const getPastTotalSupplyPromise = contract.getPastTotalSupply(BLOCKNUMBER);
+
+// ERC20Trackable getters
+const getDAONamePromise = contract.getDAOName();
+const getIntroPromise = contract.getIntro();
+const getImagePromise = contract.getImage();
+const getLinkPromise = contract.getLink();
+const getOwnerPromise = contract.getOwner();
+const getRoundNumberPromise = contract.getRoundNumber();
+const getBalanceCommitHistoryByAddressPromise = contract.getBalanceCommitHistoryByAddress(ROUND, ADDRESS);

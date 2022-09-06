@@ -16,8 +16,7 @@ contract ScheduledAirDrop {
 
     // Airdrop token
 
-    // address public tokenAddress;  // TODO: option 1
-    DAOForceToken public token;  // TODO: option 2
+    DAOForceToken public token;
     ContractInfoStore public contractInfoStore;  // New
     uint32 public numOfTotalRounds;
     uint32 public roundDurationInDays;
@@ -46,11 +45,8 @@ contract ScheduledAirDrop {
         ...
     } */
 
-    // DAOForceToken token;  // TODO: check: inject contract instance (address) as a constructor param.
-
     constructor(
-        // address _tokenAddress,  // TODO: option 1
-        DAOForceToken _tokenAddress,  // TODO: option 2
+        DAOForceToken _tokenAddress,
         uint64[] memory _airdropSnapshotTimestamps,
         uint32 _roundDurationInDays,
         uint32 _numOfTotalRounds,
@@ -59,10 +55,7 @@ contract ScheduledAirDrop {
         uint256 _totalAirdropVolumePerRound,
         address ContractInfoStoreAddr
     ){
-        // token = DAOForceToken(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
-        // token = ERC20Trackable(_tokenAddress);  // TODO: option 1 - type casting to contract type here(option 1)? or get from costructor(option 2)?
         token = _tokenAddress;
-
         contractInfoStore = ContractInfoStore(ContractInfoStoreAddr);  // New
 
         // Only the owner of the token contract can deploy the airdrop contract
@@ -94,7 +87,7 @@ contract ScheduledAirDrop {
         _tokenInfo.image = token.getImage();
         _tokenInfo.link = token.getLink();
         _tokenInfo.owner = token.getOwner();
-        _tokenInfo.tokenContractAddress = address(token);  // TODO: Check if applicable
+        _tokenInfo.tokenContractAddress = address(token);
         return _tokenInfo;
     }
 
