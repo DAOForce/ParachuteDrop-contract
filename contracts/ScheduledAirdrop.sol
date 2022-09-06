@@ -19,7 +19,7 @@ contract ScheduledAirDrop {
 
     // address public tokenAddress;  // TODO: option 1
     DAOForceToken public token;  // TODO: option 2
-
+    ContractInfoStore public contractInfoStore;  // New
     uint32 public numOfTotalRounds;
     uint32 public roundDurationInDays;
     uint256 public totalAirdropVolumePerRound;
@@ -57,11 +57,14 @@ contract ScheduledAirDrop {
         uint32 _numOfTotalRounds,
         address[] memory _airdropTargetAddresses,
         uint256[] memory _airdropAmountsPerRoundByAddress,
-        uint256 _totalAirdropVolumePerRound
+        uint256 _totalAirdropVolumePerRound,
+        address ContractInfoStoreAddr
     ){
         // token = DAOForceToken(_tokenAddress);  // Check: how to verify the pre-deployed contract address is correct?
         // token = ERC20Trackable(_tokenAddress);  // TODO: option 1 - type casting to contract type here(option 1)? or get from costructor(option 2)?
         token = _tokenAddress;
+
+        contractInfoStore = ContractInfoStore(ContractInfoStoreAddr);  // New
 
         // Only the owner of the token contract can deploy the airdrop contract
         require(msg.sender == token.getOwner());
@@ -263,6 +266,7 @@ contract ScheduledAirDrop {
             // token.airdropFromContractAccount(targetAddress, airdropAmountOfAddress);
         }
 
+        contractInfoStore.addAirdropTokenAddress(tokenAddress, address(this), airdropTargetAddresses);
         token.incrementRoundNumber();  // increment token's airdrop roundNumber.
     }
 

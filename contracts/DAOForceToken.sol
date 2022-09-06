@@ -16,16 +16,21 @@ contract DAOForceToken is ERC20Trackable {
         string memory _intro,
         string memory _image,
         string memory _link,
-        uint256 _initial_supply
+        address _owner,
+        uint256 _initial_supply,
+        address contractInfoStoreAddr
     )  ERC20Trackable (
-        _name,
-        _symbol,
-        _DAOName,
-        _intro,
-        _image,
-        _link
-        )
-    {
+            _name,
+            _symbol,
+            _DAOName,
+            _intro,
+            _image,
+            _link,
+            _initial_supply,
+            _owner,
+            address(this),
+            contractInfoStoreAddr
+    ) {
         _mint(address(this), _initial_supply * 10 ** uint(decimals()));
     }
 }
