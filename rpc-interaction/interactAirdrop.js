@@ -1,5 +1,6 @@
 const { abi } = require('../abi/airdropABI');
-const { addresses, rpcProviderUrl } = require('./deployInfo');
+const { addresses, rpcProviderUrl } = require('./utils/deployInfo');
+const { varNameToString, sendTransaction } = require('./utils/transactionSender');
 const ethers = require('ethers');
 
 const provider = new ethers.providers.JsonRpcProvider(rpcProviderUrl);
@@ -36,21 +37,6 @@ const getCalculatedAirdropAmountPerRoundByAddressPromise = contract.getCalculate
 const getInitialBlockNumberByRoundPromise = contract.getInitialBlockNumberByRound(ROUND);
 
 const claimAirdropPromise = contract.claimAirdrop(ROUND);
-
-
-/**
- * Method call transaction sender
-*/
-
-const varNameToString = varObj => Object.keys(varObj)[0]
-function sendTransaction(promise, methodPromiseName) {
-  promise.then(function(transaction) {
-    console.log("=======================================================");
-    console.log('[output]', methodPromiseName, '\n');
-    console.log(transaction);
-  })
-}
-
 
 /**
  * Send method call transactions

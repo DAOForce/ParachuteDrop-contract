@@ -1,5 +1,7 @@
 const { abi } = require('../abi/governorABI');
-const { addresses, rpcProviderUrl } = require('./deployInfo');
+const { addresses, rpcProviderUrl } = require('./utils/deployInfo');
+const { varNameToString, sendTransaction } = require('./utils/transactionSender');
+
 const ethers = require('ethers');
 
 const provider = new ethers.providers.JsonRpcProvider(rpcProviderUrl);
@@ -12,9 +14,11 @@ const wallet = new ethers.Wallet(privateKey,provider);
 
 const contract = new ethers.Contract(address,abi,wallet);
 
-// call contract methods
+/**
+ * Contract methods promise
+*/
 
 
-sendPromise.then(function(transaction){
-  console.log(transaction);
-});
+/**
+ * Send method call transactions
+*/

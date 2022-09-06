@@ -1,5 +1,6 @@
 const { abi } = require('../abi/tokenABI');
-const { addresses, rpcProviderUrl } = require('./deployInfo');
+const { addresses, rpcProviderUrl } = require('./utils/deployInfo');
+const { varNameToString, sendTransaction } = require('./utils/transactionSender');
 const ethers = require('ethers');
 
 const provider = new ethers.providers.JsonRpcProvider(rpcProviderUrl);
@@ -27,7 +28,7 @@ const balanceOfPromise = contract.balanceOf(ADDRESS);
 const POS = 1;
 const BLOCKNUMBER = 100000;
 
-const checkpointsPromise = contract.checkpoints(ADDRESS, POS);
+// const checkpointsPromise = contract.checkpoints(ADDRESS, POS);  // FIXME: call exception error
 const numCheckpointsPromise = contract.numCheckpoints(ADDRESS);
 const delegatesPromise = contract.delegates(ADDRESS);
 const getVotesPromise = contract.getVotes(ADDRESS);
@@ -42,3 +43,10 @@ const getLinkPromise = contract.getLink();
 const getOwnerPromise = contract.getOwner();
 const getRoundNumberPromise = contract.getRoundNumber();
 const getBalanceCommitHistoryByAddressPromise = contract.getBalanceCommitHistoryByAddress(ROUND, ADDRESS);
+
+/**
+ * Send method call transactions
+*/
+
+sendTransaction(getDAONamePromise, varNameToString({ getDAONamePromise }));
+sendTransaction(balanceOfPromise, varNameToString({ balanceOfPromise }));
