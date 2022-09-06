@@ -17,8 +17,16 @@ const contract = new ethers.Contract(address,abi,wallet);
 /**
  * Contract methods promise
 */
+const TOKEN_ADDRESS = addresses.DAOForceToken;
+const USER_ADDRESS = process.env.CHARLIE_ADDRESS;
 
+const getAllGovernanceTokenInfoPromise = contract.getAllGovernanceTokenInfo();
+const findGovernanceTokenListIdByAddrPromise = contract.findGovernanceTokenListIdByAddr(TOKEN_ADDRESS);
+const findAirdropTokenAddressListByUserAddrPromise = contract.findAirdropTokenAddressListByUserAddr(USER_ADDRESS);
 
 /**
  * Send method call transactions
 */
+sendTransaction(getAllGovernanceTokenInfoPromise, varNameToString({ getAllGovernanceTokenInfoPromise }));
+sendTransaction(findGovernanceTokenListIdByAddrPromise, varNameToString({ findGovernanceTokenListIdByAddrPromise }));
+sendTransaction(findAirdropTokenAddressListByUserAddrPromise, varNameToString({ findAirdropTokenAddressListByUserAddrPromise }));
