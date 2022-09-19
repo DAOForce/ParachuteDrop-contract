@@ -36,7 +36,6 @@ async function main() {
       "DAO for interstellar telescope launch.",
       "some_image_url",
       "some_website_link",
-      await deployer.getAddress(),  // token contract owner as deployer?
       1500,  // DECIMAL == 18
       INFOSTORE_ADDRESS
   );

@@ -32,7 +32,6 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
         string memory image,
         string memory link,
         uint256 _initial_supply,
-        address owner,
         address mintedERC20ContractAddr,
         address contractInfoStoreAddr
     ) ERC20 (_name, _symbol) ERC20Permit(_name) {
@@ -40,7 +39,7 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
         _intro = intro;
         _image = image;
         _link = link;
-        _owner = owner;
+        _owner = msg.sender;
 
         CommonStructs.TokenInfo memory _tokenInfo = CommonStructs.TokenInfo(
             _initial_supply * 10 ** uint(decimals()),
@@ -50,7 +49,7 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
             intro,
             image,
             link,
-            owner,
+            _owner,
             mintedERC20ContractAddr
         );
         contractInfoStore = ContractInfoStore(contractInfoStoreAddr);

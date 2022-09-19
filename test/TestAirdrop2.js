@@ -51,8 +51,8 @@ describe("Token & Airdrop contracts test", function() {
             "DAO for Sigrid Jin",
             "some_image_url",
             "some_website_link",
-            owner.getAddress(),
             1500,  // DECIMAL == 18
+            // owner.getAddress(),
             ContractInfoStoreAddr
         );
 
@@ -81,7 +81,7 @@ describe("Token & Airdrop contracts test", function() {
             "DAO for interstellar telescope launch",
             "some_image_url",
             "some_website_link",
-            owner.getAddress(),
+            // owner.getAddress(),
             1500,  // DECIMAL == 18
             ContractInfoStoreAddr
         );
