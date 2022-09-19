@@ -26,6 +26,8 @@ async function main() {
   // Token Contract
   const TokenContract = await ethers.getContractFactory("DAOForceToken");
 
+  INFOSTORE_ADDRESS = "0xFb6A4661E035B58e6eac9c713aB9BA59eE657022";
+  
   // Token instance
   const Token = await TokenContract.deploy(
       "TelescopeToken",
@@ -34,7 +36,9 @@ async function main() {
       "DAO for interstellar telescope launch.",
       "some_image_url",
       "some_website_link",
-      1500  // DECIMAL == 18
+      await deployer.getAddress(),  // token contract owner as deployer?
+      1500,  // DECIMAL == 18
+      INFOSTORE_ADDRESS
   );
   console.log('>>> Deployment in progress...')
   await Token.deployed();

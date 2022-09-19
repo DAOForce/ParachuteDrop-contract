@@ -14,10 +14,6 @@ module.exports = {
       url: "https://eth.bd.evmos.dev:8545",
       accounts: [process.env.DEPLOY_PRIVATE_KEY]
     },
-    rinkeby: {
-      url: "https://ethereum-rinkeby-rpc.allthatnode.com",
-      accounts: [process.env.DEPLOY_PRIVATE_KEY]
-    },
     goerli: {
       url: "https://ethereum-goerli-rpc.allthatnode.com",
       accounts: [process.env.DEPLOY_PRIVATE_KEY]

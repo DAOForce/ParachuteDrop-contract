@@ -17,6 +17,7 @@ async function main() {
 const AirdropContract = await ethers.getContractFactory("ScheduledAirDrop");
 
 TOKEN_ADDRESS = "0x598a8F9AEBB6693D9763A70a072B997112Ca654e";
+INFOSTORE_ADDRESS = "0xFb6A4661E035B58e6eac9c713aB9BA59eE657022";
 AIRDROP_SNAPSHOT_TIMESTAMPS = [
     Math.round(new Date().setMonth(new Date().getMonth() - 3) / 1000),
     Math.round(new Date().setMonth(new Date().getMonth() - 2) / 1000),
@@ -41,7 +42,8 @@ const Airdrop = await AirdropContract.deploy(
     NUM_OF_TOTAL_ROUNDS,
     AIRDROP_TARGET_ADDRESSES,
     AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS,
-    TOTAL_AIRDROP_VOLUME_PER_ROUND
+    TOTAL_AIRDROP_VOLUME_PER_ROUND,
+    INFOSTORE_ADDRESS
 );
 
 console.log('>>> Deployment in progress...')
