@@ -1,10 +1,10 @@
 // [key: contractName], [value: contractAddress]
 
 const addressObject = {
-    ContractInfoStore: "0x4E11Ef8Dc29599376628597e5Ea94F7Dbd8a9438",
-    DAOForceToken: "0xc5cCD76cfFcdF59136165342B0f8E80A856aCcE4",
-    DAOForceGovernor: "0x0C0aa95FdE59008b85773332e65AaeB1aead8Cd6",
-    ScheduledAirdrop: "0x12D16b6c080F3F0CA360fde1f49f95a9753073f1",
+    ContractInfoStore: "0x838D974c4fB94537bFA9e700B1a09b8324743471",
+    DAOForceToken: "0xd78D79F3447744e76e8F661ea3D11371Cbe534Cc",
+    DAOForceGovernor: "0x5527a3F2b7000AC5F73Bcf70F01C5bE79a772B47",
+    ScheduledAirdrop: "0xF76cb57df586D9DdEb2BB20652CF633417887Ca3",
 };
 
 exports.addresses = addressObject;

@@ -35,6 +35,11 @@ exports.abi = [
         "internalType": "uint256",
         "name": "_totalAirdropVolumePerRound",
         "type": "uint256"
+      },
+      {
+        "internalType": "contract ContractInfoStore",
+        "name": "_contractInfoStoreAddress",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -161,6 +166,19 @@ exports.abi = [
     "name": "claimAirdrop",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "contractInfoStore",
+    "outputs": [
+      {
+        "internalType": "contract ContractInfoStore",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

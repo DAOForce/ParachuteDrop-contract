@@ -44,9 +44,14 @@ const getOwnerPromise = contract.getOwner();
 const getRoundNumberPromise = contract.getRoundNumber();
 const getBalanceCommitHistoryByAddressPromise = contract.getBalanceCommitHistoryByAddress(ROUND, ADDRESS);
 
+const getNamePromise = contract.getTokenName();
+const getSymbolPromise = contract.getTicker();
+
 /**
  * Send method call transactions
 */
 
-sendTransaction(getDAONamePromise, varNameToString({ getDAONamePromise }));
-sendTransaction(balanceOfPromise, varNameToString({ balanceOfPromise }));
+// sendTransaction(getDAONamePromise, varNameToString({ getDAONamePromise }));
+// sendTransaction(balanceOfPromise, varNameToString({ balanceOfPromise }));
+sendTransaction(getNamePromise, varNameToString({ getNamePromise }));
+sendTransaction(getSymbolPromise, varNameToString({ getSymbolPromise }));

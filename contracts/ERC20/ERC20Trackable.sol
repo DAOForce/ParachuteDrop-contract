@@ -59,6 +59,14 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
         contractInfoStore.storeNewGovernanceToken(_tokenInfo);
     }
 
+    function getTokenName() public view returns (string memory) {
+        return name();
+    }
+
+    function getTicker() public view returns (string memory) {
+        return symbol();
+    }
+
     function getDAOName() public view returns (string memory) {
         return _DAOName;
     }
