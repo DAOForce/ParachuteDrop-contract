@@ -13,7 +13,7 @@ module.exports = {
     evmos: {
       url: "https://eth.bd.evmos.dev:8545",
       accounts: [process.env.DEPLOY_PRIVATE_KEY],
-      // gas: 2100000,
+      // gas: 210000000,
       // gasPrice: 8000000000,
       // gas: "auto",
       // gasPrice: "auto",

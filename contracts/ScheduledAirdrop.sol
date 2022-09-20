@@ -64,6 +64,8 @@ contract ScheduledAirDrop {
         // Only the owner of the token contract can deploy the airdrop contract
         require(msg.sender == token.getOwner());
 
+        contractInfoStore.addAirdropTokenAddress(address(token), address(this), airdropTargetAddresses);
+
         airdropSnapshotTimestamps = _airdropSnapshotTimestamps;
         roundDurationInDays = _roundDurationInDays;
         numOfTotalRounds = _numOfTotalRounds;
@@ -261,7 +263,7 @@ contract ScheduledAirDrop {
             // token.airdropFromContractAccount(targetAddress, airdropAmountOfAddress);
         }
 
-        contractInfoStore.addAirdropTokenAddress(address(token), address(this), airdropTargetAddresses);
+        // contractInfoStore.addAirdropTokenAddress(address(token), address(this), airdropTargetAddresses);
         token.incrementRoundNumber();  // increment token's airdrop roundNumber.
     }
 

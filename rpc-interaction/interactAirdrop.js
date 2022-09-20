@@ -38,8 +38,15 @@ const getInitialBlockNumberByRoundPromise = contract.getInitialBlockNumberByRoun
 
 const claimAirdropPromise = contract.claimAirdrop(ROUND);
 
+const initiateAirdropRoundPromise = contract.initiateAirdropRound();
+
 /**
  * Send method call transactions
 */
 
-sendTransaction(getTokenAddressPromise, varNameToString({ getTokenAddressPromise }));
+// sendTransaction(getTokenAddressPromise, varNameToString({ getTokenAddressPromise }));
+// sendTransaction(initiateAirdropRoundPromise, varNameToString({ initiateAirdropRoundPromise }));
+
+sendTransaction(getAirdropTargetAddressesPromise, varNameToString({ getAirdropTargetAddressesPromise }));
+
+
