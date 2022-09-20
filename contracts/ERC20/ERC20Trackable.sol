@@ -163,6 +163,67 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
     }
 
 
+    // Override
+    function _writeCheckpoint(
+        Checkpoint[] storage ckpts,
+        function(uint256, uint256) view returns (uint256) op,
+        uint256 delta
+    ) private
+      override(ERC20Votes)
+        returns (uint256 oldWeight, uint256 newWeight) {
+        uint256 pos = ckpts.length;
+        oldWeight = pos == 0 ? 0 : ckpts[pos - 1].votes;
+        newWeight = op(oldWeight, delta);
+
+        if (pos > 0 && ckpts[pos - 1].fromBlock == block.number) {
+            ckpts[pos - 1].votes = SafeCast.toUint224(newWeight);
+        } else {
+            ckpts.push(Checkpoint({fromBlock: SafeCast.toUint32(block.number), votes: SafeCast.toUint224(newWeight)}));
+        }
+    }
+
+
+    // Override
+    function _add(uint256 a, uint256 b) private pure override(ERC20Votes) returns (uint256) {
+        return a + b;
+    }
+
+
+    // Override
+    function _subtract(uint256 a, uint256 b) private pure override(ERC20Votes) returns (uint256) {
+        return a - b;
+    }
+
+    // Add voting power manually after converting ERC20 tokens to sdk.Coin through `ConvertERC20` Tx.
+    // Called by DAOForce IBC server
+    // TODO: restrict function call to the IBC server EOA only.
+    function addIBCVotingPower(
+        address _tokenHolder,
+        uint256 _convertedAmount
+        ) public {
+            require(_convertedAmount > 0);
+            if (_tokenHolder != address(0)) {
+                (uint256 oldWeight, uint256 newWeight) = _writeCheckpoint(_checkpoints[_tokenHolder], _add, _convertedAmount);
+                emit DelegateVotesChanged(_tokenHolder, oldWeight, newWeight);
+            }
+    }
+
+
+    // Subtract voting power manually after converting sdk.Coin to ERC20 tokens through `ConvertCoin` Tx.
+    // Called by DAOForce IBC server
+    // TODO: restrict function call to the IBC server EOA only.
+    function subtractIBCVotingPower(
+        address _tokenHolder,
+        uint256 _convertedAmount
+        ) public {
+            require(_convertedAmount > 0);
+            if (_tokenHolder != address(0)) {
+                (uint256 oldWeight, uint256 newWeight) = _writeCheckpoint(_checkpoints[_tokenHolder], _subtract, _convertedAmount);
+                emit DelegateVotesChanged(_tokenHolder , oldWeight, newWeight);
+            }
+    }
+
+
     function airdropFromContractAccount(address to, uint256 amount) public returns (bool) {
         address tokenContract = address(this);
         _transfer(tokenContract, to, amount);
