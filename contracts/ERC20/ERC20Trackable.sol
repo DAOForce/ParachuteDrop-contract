@@ -2,12 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import "hardhat/console.sol";
 
 import {CommonStructs} from "../common/CommonStructs.sol";
+import "./ERC20Votes.sol";
 import "../ContractInfoStore.sol";
 
 
@@ -163,36 +163,15 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
     }
 
 
-    // Override
-    function _writeCheckpoint(
-        Checkpoint[] storage ckpts,
-        function(uint256, uint256) view returns (uint256) op,
-        uint256 delta
-    ) private
-      override(ERC20Votes)
-        returns (uint256 oldWeight, uint256 newWeight) {
-        uint256 pos = ckpts.length;
-        oldWeight = pos == 0 ? 0 : ckpts[pos - 1].votes;
-        newWeight = op(oldWeight, delta);
-
-        if (pos > 0 && ckpts[pos - 1].fromBlock == block.number) {
-            ckpts[pos - 1].votes = SafeCast.toUint224(newWeight);
-        } else {
-            ckpts.push(Checkpoint({fromBlock: SafeCast.toUint32(block.number), votes: SafeCast.toUint224(newWeight)}));
-        }
-    }
-
-
-    // Override
-    function _add(uint256 a, uint256 b) private pure override(ERC20Votes) returns (uint256) {
+    function add(uint256 a, uint256 b) private pure returns (uint256) {
         return a + b;
     }
 
 
-    // Override
-    function _subtract(uint256 a, uint256 b) private pure override(ERC20Votes) returns (uint256) {
+    function subtract(uint256 a, uint256 b) private pure returns (uint256) {
         return a - b;
     }
+
 
     // Add voting power manually after converting ERC20 tokens to sdk.Coin through `ConvertERC20` Tx.
     // Called by DAOForce IBC server
@@ -203,7 +182,7 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
         ) public {
             require(_convertedAmount > 0);
             if (_tokenHolder != address(0)) {
-                (uint256 oldWeight, uint256 newWeight) = _writeCheckpoint(_checkpoints[_tokenHolder], _add, _convertedAmount);
+                (uint256 oldWeight, uint256 newWeight) = _writeCheckpoint(_checkpoints[_tokenHolder], add, _convertedAmount);
                 emit DelegateVotesChanged(_tokenHolder, oldWeight, newWeight);
             }
     }
@@ -218,7 +197,7 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
         ) public {
             require(_convertedAmount > 0);
             if (_tokenHolder != address(0)) {
-                (uint256 oldWeight, uint256 newWeight) = _writeCheckpoint(_checkpoints[_tokenHolder], _subtract, _convertedAmount);
+                (uint256 oldWeight, uint256 newWeight) = _writeCheckpoint(_checkpoints[_tokenHolder], subtract, _convertedAmount);
                 emit DelegateVotesChanged(_tokenHolder , oldWeight, newWeight);
             }
     }
