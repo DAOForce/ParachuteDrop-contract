@@ -1,5 +1,7 @@
 const path = require("path");
 const { utils } = require("ethers");
+const { addresses } = require('../rpc-interaction/utils/deployInfo');
+
 
 async function main() {
 
@@ -16,8 +18,10 @@ async function main() {
 // Airdrop Contract
 const AirdropContract = await ethers.getContractFactory("ScheduledAirDrop");
 
-TOKEN_ADDRESS = "0x598a8F9AEBB6693D9763A70a072B997112Ca654e";
-INFOSTORE_ADDRESS = "0xFb6A4661E035B58e6eac9c713aB9BA59eE657022";
+const TOKEN_ADDRESS = addresses.DAOForceToken;
+const INFOSTORE_ADDRESS = addresses.ContractInfoStore;
+
+
 AIRDROP_SNAPSHOT_TIMESTAMPS = [
     Math.round(new Date().setMonth(new Date().getMonth() - 3) / 1000),
     Math.round(new Date().setMonth(new Date().getMonth() - 2) / 1000),

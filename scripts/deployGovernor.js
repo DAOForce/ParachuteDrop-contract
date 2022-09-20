@@ -1,4 +1,6 @@
 const path = require("path");
+const { addresses } = require('../rpc-interaction/utils/deployInfo');
+
 
 async function main() {
 
@@ -15,7 +17,7 @@ async function main() {
 // Governor Contract
 const GovernorContract = await ethers.getContractFactory("DAOForceGovernor");
 
-const TOKEN_ADDRESS = "0x598a8F9AEBB6693D9763A70a072B997112Ca654e";
+const TOKEN_ADDRESS = addresses.DAOForceToken;
 
 const Governor = await GovernorContract.deploy(TOKEN_ADDRESS);
 

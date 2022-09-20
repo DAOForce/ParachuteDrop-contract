@@ -2,6 +2,8 @@
 // yours, or create new ones.
 
 const path = require("path");
+const { addresses } = require('../rpc-interaction/utils/deployInfo');
+
 
 async function main() {
   // This is just a convenience check
@@ -26,7 +28,7 @@ async function main() {
   // Token Contract
   const TokenContract = await ethers.getContractFactory("DAOForceToken");
 
-  INFOSTORE_ADDRESS = "0xFb6A4661E035B58e6eac9c713aB9BA59eE657022";
+  const INFOSTORE_ADDRESS = addresses.ContractInfoStore;
   
   // Token instance
   const Token = await TokenContract.deploy(

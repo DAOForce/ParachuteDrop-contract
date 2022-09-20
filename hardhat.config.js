@@ -12,7 +12,11 @@ module.exports = {
   networks: {
     evmos: {
       url: "https://eth.bd.evmos.dev:8545",
-      accounts: [process.env.DEPLOY_PRIVATE_KEY]
+      accounts: [process.env.DEPLOY_PRIVATE_KEY],
+      // gas: 2100000,
+      // gasPrice: 8000000000,
+      // gas: "auto",
+      // gasPrice: "auto",
     },
     goerli: {
       url: "https://ethereum-goerli-rpc.allthatnode.com",
