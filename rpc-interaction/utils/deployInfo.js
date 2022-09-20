@@ -2,9 +2,9 @@
 
 const addressObject = {
     ContractInfoStore: "0x838D974c4fB94537bFA9e700B1a09b8324743471",
-    DAOForceToken: "0xd78D79F3447744e76e8F661ea3D11371Cbe534Cc",
-    DAOForceGovernor: "0x5527a3F2b7000AC5F73Bcf70F01C5bE79a772B47",
-    ScheduledAirdrop: "0xCa2Ff0E5C965B504e55d0cD1b59885f4290699F8",
+    DAOForceToken: "0xf165029bfc1a40a93E5EC3F4d0148066ABA542fd",
+    DAOForceGovernor: "0xd0251672a3C9f59776e6Bf7a7CdddC7c11bEd8e4",
+    ScheduledAirdrop: "0x4bAECdBa45727Ce60ee126f871D36D8e74BB36eE",
 };
 
 exports.addresses = addressObject;

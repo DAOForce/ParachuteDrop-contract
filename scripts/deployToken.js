@@ -32,11 +32,11 @@ async function main() {
   
   // Token instance
   const Token = await TokenContract.deploy(
-      "TelescopeToken",
-      "TELE",
-      "TelescopeDAO",
-      "DAO for interstellar telescope launch.",
-      "some_image_url",
+      "JunhaDAOToken",
+      "JUNHA",
+      "JunhaDAO",
+      "DAO for junha.",
+      "https://ipfs.io/ipfs/bafybeie4lxug2vxod3clrb3krv5e2bbrmpexjgdzdfqkewbkc5egol3nmu/ef_image_white.png",
       "some_website_link",
       1500,  // DECIMAL == 18
       INFOSTORE_ADDRESS
