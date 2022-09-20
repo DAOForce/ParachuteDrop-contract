@@ -33,7 +33,8 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
         string memory link,
         uint256 _initial_supply,
         address mintedERC20ContractAddr,
-        address contractInfoStoreAddr
+        // address contractInfoStoreAddr
+        ContractInfoStore _contractInfoStoreAddress
     ) ERC20 (_name, _symbol) ERC20Permit(_name) {
         _DAOName = DAOName;
         _intro = intro;
@@ -52,7 +53,9 @@ contract ERC20Trackable is ERC20, ERC20Permit, ERC20Votes {
             _owner,
             mintedERC20ContractAddr
         );
-        contractInfoStore = ContractInfoStore(contractInfoStoreAddr);
+
+        contractInfoStore = _contractInfoStoreAddress;
+        // contractInfoStore = ContractInfoStore(contractInfoStoreAddr);
         contractInfoStore.storeNewGovernanceToken(_tokenInfo);
     }
 

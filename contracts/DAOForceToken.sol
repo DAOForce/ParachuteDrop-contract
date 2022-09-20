@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./ERC20/ERC20Trackable.sol";
+import "./ContractInfoStore.sol";
 import "hardhat/console.sol";
 
 
@@ -16,7 +17,8 @@ contract DAOForceToken is ERC20Trackable {
         string memory _image,
         string memory _link,
         uint256 _initial_supply,
-        address contractInfoStoreAddr
+        // address contractInfoStoreAddr
+        ContractInfoStore _contractInfoStoreAddress
     )  ERC20Trackable (
             _name,
             _symbol,
@@ -26,7 +28,7 @@ contract DAOForceToken is ERC20Trackable {
             _link,
             _initial_supply,
             address(this),
-            contractInfoStoreAddr
+            _contractInfoStoreAddress
     ) {
         _mint(address(this), _initial_supply * 10 ** uint(decimals()));
     }

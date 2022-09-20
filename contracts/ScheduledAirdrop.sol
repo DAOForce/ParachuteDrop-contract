@@ -5,6 +5,7 @@ import "hardhat/console.sol";
 import "./common/CommonStructs.sol";
 import "./ERC20/ERC20Trackable.sol";
 import "./DAOForceToken.sol";  // TODO: check if it should be replaced to Interface
+import "./ContractInfoStore.sol";
 
 
 pragma solidity ^0.8.0;
@@ -53,10 +54,12 @@ contract ScheduledAirDrop {
         address[] memory _airdropTargetAddresses,
         uint256[] memory _airdropAmountsPerRoundByAddress,
         uint256 _totalAirdropVolumePerRound,
-        address ContractInfoStoreAddr
+        // address ContractInfoStoreAddr
+        ContractInfoStore _contractInfoStoreAddress
     ){
         token = _tokenAddress;
-        contractInfoStore = ContractInfoStore(ContractInfoStoreAddr);  // New
+        // contractInfoStore = ContractInfoStore(ContractInfoStoreAddr);  // New
+        contractInfoStore = _contractInfoStoreAddress;
 
         // Only the owner of the token contract can deploy the airdrop contract
         require(msg.sender == token.getOwner());
