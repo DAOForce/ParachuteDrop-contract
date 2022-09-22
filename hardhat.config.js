@@ -18,6 +18,10 @@ module.exports = {
       // gas: "auto",
       // gasPrice: "auto",
     },
+    evmos_mainnet: {
+      url: "https://eth.bd.evmos.org:8545",
+      accounts: [process.env.DEPLOY_PRIVATE_KEY],
+    },
     goerli: {
       url: "https://ethereum-goerli-rpc.allthatnode.com",
       accounts: [process.env.DEPLOY_PRIVATE_KEY]
