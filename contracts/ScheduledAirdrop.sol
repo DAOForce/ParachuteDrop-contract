@@ -267,7 +267,7 @@ contract ScheduledAirDrop {
         token.incrementRoundNumber();  // increment token's airdrop roundNumber.
     }
 
-    function claimAirdrop(uint16 _roundNumber) public payable {
+    function checkClaimmableAmount(uint16 _roundNumber) public returns (uint256) {
 
         require(_addressInAllowList(msg.sender), "You're not in token airdrop allowlist.");  // Check if the function caller is in airdrop allowlist.
 
@@ -279,9 +279,15 @@ contract ScheduledAirDrop {
         if (_calculatedAirdropAmountPerRoundByAddress[_roundNumber][msg.sender] == 0) {
             initiateAirdropRound();
         }
-
-        uint256 airdropAmount = _calculatedAirdropAmountPerRoundByAddress[_roundNumber][msg.sender];
         
+        uint256 airdropAmount = _calculatedAirdropAmountPerRoundByAddress[_roundNumber][msg.sender];
+
+        return airdropAmount;
+    }
+
+    function claimAirdrop(uint16 _roundNumber) public payable {
+
+        uint256 airdropAmount = checkClaimmableAmount(_roundNumber);
         token.airdropFromContractAccount(msg.sender, airdropAmount);
     }
 }
