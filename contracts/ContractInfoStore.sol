@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-
 import {CommonStructs} from "./common/CommonStructs.sol";
 import "hardhat/console.sol";
 
@@ -10,6 +9,7 @@ struct GovernanceTokenInfo {
     address airdropTokenAddress;
     CommonStructs.TokenInfo tokenInfo;
     address[] airdropTargetAddressList;
+    string delegationAndWhiteListInIpfsHash;
 }
 
 struct MatchedGovAirdropTokenDTO {
@@ -23,7 +23,7 @@ contract ContractInfoStore {
 
     function storeNewGovernanceToken(CommonStructs.TokenInfo memory _tokenInfo) public returns (bool) {
         // 1. creating the GovernanceTokenInfo Struct
-        GovernanceTokenInfo memory governanceTokenInfo = GovernanceTokenInfo(false, 0x0000000000000000000000000000000000000000, _tokenInfo, new address[](0));
+        GovernanceTokenInfo memory governanceTokenInfo = GovernanceTokenInfo(false, 0x0000000000000000000000000000000000000000, _tokenInfo, new address[](0), "");
 
         // 2. push to the list
         GovernanceTokenList.push(governanceTokenInfo);
@@ -47,11 +47,12 @@ contract ContractInfoStore {
         revert("Not Found Governance Token");
     }
 
-    function addAirdropTokenAddress(address governanceTokenAddr, address airdropTokenAddr, address[] calldata _airdropTargetAddresses) public returns (bool) {
+    function addAirdropTokenAddress(address governanceTokenAddr, address airdropTokenAddr, address[] calldata _airdropTargetAddresses, string calldata delegationAndWhiteListInIpfsHash) public returns (bool) {
         uint foundGovTokenId = findGovernanceTokenListIdByAddr(governanceTokenAddr);
         GovernanceTokenList[foundGovTokenId].isAirdropContractOpened = true;
         GovernanceTokenList[foundGovTokenId].airdropTokenAddress = airdropTokenAddr;
         GovernanceTokenList[foundGovTokenId].airdropTargetAddressList = _airdropTargetAddresses;
+        GovernanceTokenList[foundGovTokenId].delegationAndWhiteListInIpfsHash = delegationAndWhiteListInIpfsHash;
         return true;
     }
 
