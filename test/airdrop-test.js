@@ -96,6 +96,7 @@ describe("Token & Airdrop contracts test", function() {
         console.log("input data >>>> Airdrop timestamps: ", AIRDROP_SNAPSHOT_TIMESTAMPS);
 
         SAMPLE_IPFS_HASH = "QmNv9iZBj4my293vTiD5vuQJcPD8YoXwgt598pFJRefWqV";
+        SAMPLE_IPFS_HASH_2 = "AmNv9iZBj4my293vTiD5vuQJcPD8YoXwgt598pFJRefWqE"
 
         const Airdrop = await AirdropContract.deploy(
             TOKEN_ADDRESS,
@@ -106,7 +107,8 @@ describe("Token & Airdrop contracts test", function() {
             AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS,
             TOTAL_AIRDROP_VOLUME_PER_ROUND,
             ContractInfoStoreAddr,
-            SAMPLE_IPFS_HASH
+            SAMPLE_IPFS_HASH,
+            SAMPLE_IPFS_HASH_2
         );
 
         await Airdrop.deployed();
@@ -151,6 +153,7 @@ describe("Token & Airdrop contracts test", function() {
             TOTAL_AIRDROP_VOLUME_PER_ROUND = utils.parseEther("150");
 
             let SAMPLE_IPFS_HASH = "QmNv9iZBj4my293vTiD5vuQJcPD8YoXwgt598pFJRefWqV";
+            let SAMPLE_IPFS_HASH_2 = "AmNv9iZBj4my293vTiD5vuQJcPD8YoXwgt598pFJRefWqE";
 
             const ContractInfoStoreAddr = ContractInfoStore.address;
 
@@ -165,7 +168,8 @@ describe("Token & Airdrop contracts test", function() {
                 AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS,
                 TOTAL_AIRDROP_VOLUME_PER_ROUND,
                 ContractInfoStoreAddr,
-                SAMPLE_IPFS_HASH
+                SAMPLE_IPFS_HASH,
+                SAMPLE_IPFS_HASH_2
             );
 
             // when
@@ -182,7 +186,8 @@ describe("Token & Airdrop contracts test", function() {
             expect(firstContractInfo['airdropTargetAddressList']).include(addr1.address);
             expect(firstContractInfo['airdropTargetAddressList']).include(addr2.address);
             expect(firstContractInfo['airdropTargetAddressList']).include(addr3.address);
-            expect(firstContractInfo['delegationAndWhiteListInIpfsHash']).include(SAMPLE_IPFS_HASH);
+            expect(firstContractInfo['delegationIpfsHash']).include(SAMPLE_IPFS_HASH);
+            expect(firstContractInfo['whiteListIpfsHash']).include(SAMPLE_IPFS_HASH_2);
         })
 
         it("Should find the matched Governance and Airdrop Token Contract List", async () => {
@@ -202,6 +207,7 @@ describe("Token & Airdrop contracts test", function() {
             AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS = [utils.parseEther("30"), utils.parseEther("50"), utils.parseEther("70")];
             TOTAL_AIRDROP_VOLUME_PER_ROUND = utils.parseEther("150");
             SAMPLE_IPFS_HASH = "QmNv9iZBj4my293vTiD5vuQJcPD8YoXwgt598pFJRefWqV";
+            SAMPLE_IPFS_HASH_2 = "AmNv9iZBj4my293vTiD5vuQJcPD8YoXwgt598pFJRefWqE";
 
             const ContractInfoStoreAddr = ContractInfoStore.address;
 
@@ -216,7 +222,8 @@ describe("Token & Airdrop contracts test", function() {
                 AIRDROP_AMOUNTS_PER_ROUND_BY_ADDRESS,
                 TOTAL_AIRDROP_VOLUME_PER_ROUND,
                 ContractInfoStoreAddr,
-                SAMPLE_IPFS_HASH
+                SAMPLE_IPFS_HASH,
+                SAMPLE_IPFS_HASH_2
             );
 
             await Airdrop.initiateAirdropRound();

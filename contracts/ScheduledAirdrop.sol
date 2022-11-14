@@ -55,7 +55,8 @@ contract ScheduledAirDrop {
         uint256[] memory _airdropAmountsPerRoundByAddress,
         uint256 _totalAirdropVolumePerRound,
         ContractInfoStore _contractInfoStoreAddress,
-        string memory delegationAndWhiteListInIpfsHash
+        string memory delegationIpfsHash,
+        string memory whiteListIpfsHash
     ){
         token = _tokenAddress;
         // contractInfoStore = ContractInfoStore(ContractInfoStoreAddr);  // New
@@ -64,7 +65,7 @@ contract ScheduledAirDrop {
         // Only the owner of the token contract can deploy the airdrop contract
         require(msg.sender == token.getOwner());
 
-        contractInfoStore.addAirdropTokenAddress(address(token), address(this), _airdropTargetAddresses, delegationAndWhiteListInIpfsHash);
+        contractInfoStore.addAirdropTokenAddress(address(token), address(this), _airdropTargetAddresses, delegationIpfsHash, whiteListIpfsHash);
 
         airdropSnapshotTimestamps = _airdropSnapshotTimestamps;
         roundDurationInDays = _roundDurationInDays;
