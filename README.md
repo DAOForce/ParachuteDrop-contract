@@ -1,6 +1,33 @@
 # ParachuteDrop (DAOForce)
 ![Frame 5927 (1)](https://user-images.githubusercontent.com/91793849/191650040-b643a65f-34db-4d00-9a36-d6be978207d9.png)
 
+## Deployment
+```
+npx hardhat run scripts/deployContractInfoStore.js --network polygon
+```
+
+## Contract Address
+```
+Polygon InfoStore address: 0x71e1494f269F45830d65eFF15622E0C29cD4F4d7
+Evmos InfoStore address: 0x7312b1b22f40c1fE83Fc52987D67c9D2fdd229aD
+```
+
+## ABI
+### ContractInfoStore.json
+
+[https://gist.github.com/sigridjineth/e748bf1a91c48b01e165b94707cd3ca4](https://gist.github.com/sigridjineth/e748bf1a91c48b01e165b94707cd3ca4)
+
+### DAOForceGovernor.json
+
+[https://gist.github.com/sigridjineth/49040ab8cfbf860b6ce3f88c724690b1](https://gist.github.com/sigridjineth/49040ab8cfbf860b6ce3f88c724690b1)
+
+### DAOForceToken.json
+
+[https://gist.github.com/sigridjineth/601eb678b2ce0ca92b83ab742ff48747](https://gist.github.com/sigridjineth/601eb678b2ce0ca92b83ab742ff48747)
+
+### ScheduledAirDrop.json
+
+[https://gist.github.com/sigridjineth/f6202224b7f5bdf2bed5de11abba694d](https://gist.github.com/sigridjineth/f6202224b7f5bdf2bed5de11abba694d)
 
 ## Inspiration
 There are three main pain points in the current DAO system regarding airdrop and delegation on Cosmos.
