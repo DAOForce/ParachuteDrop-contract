@@ -286,6 +286,17 @@ contract ScheduledAirDrop {
         return airdropAmount;
     }
 
+    function checkLoyaltyScoreByAddressAndRound(address _address, uint16 _roundNumber) public returns (uint256) {
+        if (_calculatedAirdropAmountPerRoundByAddress[_roundNumber][msg.sender] == 0) {
+            initiateAirdropRound();
+        }    
+        uint256 airdropAmount = _calculatedAirdropAmountPerRoundByAddress[_roundNumber][msg.sender];
+        uint256 airdropUnitVolume = addressToAirdropVolumePerRound[_address];
+        uint256 loyaltyScore = airdropAmount * 100 / airdropUnitVolume;
+        return loyaltyScore;
+    }
+
+
     function claimAirdrop(uint16 _roundNumber) public payable {
 
         uint256 airdropAmount = checkClaimmableAmount(_roundNumber);
